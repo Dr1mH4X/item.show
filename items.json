@@ -108,5 +108,15 @@
     "warrantyDate": "2026-05-29",
     "notes": "UGOSPro还不错",
     "category": "电子设备"
+  },
+  {
+    "id": 12,
+    "name": "🔋CUKTECH 10Mini",
+    "purchaseDate": "2025-11-13",
+    "price": 2350,
+    "retirementDate": null,
+    "warrantyDate": "2026-11-13",
+    "notes": "没用过，试一下",
+    "category": "电子设备"
   }
 ]
