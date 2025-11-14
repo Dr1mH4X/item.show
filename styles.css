@@ -28,6 +28,10 @@ body {
     padding: 0;
     color: var(--darker);
     overflow-x: hidden;
+    transition:
+        background-color 0.35s ease,
+        color 0.35s ease,
+        background 0.35s ease;
 }
 
 .container {
@@ -50,6 +54,12 @@ header {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+    transition:
+        background-color 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease,
+        box-shadow 0.35s ease,
+        backdrop-filter 0.35s ease;
 }
 
 .header-controls {
@@ -190,6 +200,10 @@ header {
 
 :root[data-theme="dark"] body {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    transition:
+        background-color 0.35s ease,
+        color 0.35s ease,
+        background 0.35s ease;
 }
 
 :root[data-theme="dark"] header {
@@ -252,6 +266,11 @@ header {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.5);
+    transition:
+        background-color 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease,
+        backdrop-filter 0.35s ease;
 }
 
 .time-banner .current-time {
@@ -293,7 +312,11 @@ header {
     border: 1px solid rgba(0, 0, 0, 0.05);
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        background-color 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease;
 }
 
 .stat-card:hover {
@@ -389,6 +412,10 @@ header {
     border-radius: 16px;
     padding: 30px;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    transition:
+        background-color 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease;
 }
 
 .section-header {
@@ -457,6 +484,11 @@ header {
     --blur-amount: 0px;
     backdrop-filter: blur(var(--blur-amount));
     -webkit-backdrop-filter: blur(var(--blur-amount));
+    transition:
+        background-color 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease,
+        backdrop-filter 0.35s ease;
 }
 
 .item-header {
@@ -485,6 +517,9 @@ header {
     margin-bottom: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid #f1f1f1;
+    transition:
+        border-color 0.35s ease,
+        color 0.35s ease;
 }
 
 .item-detail:last-child {
@@ -509,6 +544,10 @@ header {
     padding: 15px;
     margin-top: 15px;
     border: 1px solid rgba(67, 97, 238, 0.1);
+    transition:
+        background-color 0.35s ease,
+        border-color 0.35s ease,
+        color 0.35s ease;
 }
 
 .cost-calculation .title {
@@ -673,5 +712,12 @@ header {
 
     .section-header h2 {
         font-size: 1.3rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
     }
 }
