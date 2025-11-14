@@ -1,118 +1,105 @@
-// item data
-const items = [
-  {
-    id: 1,
-    name: "📱Samsung GALAXY Note II",
-    purchaseDate: "2014-10-15",
-    price: 2660,
-    retirementDate: "2016-03-15",
-    warrantyDate: "2015-10-15",
-    notes: "第一台手机",
-    category: "电子设备",
-  },
-  {
-    id: 2,
-    name: "📱Redmi K30",
-    purchaseDate: "2020-10-17",
-    price: 1999,
-    retirementDate: "2023-04-27",
-    warrantyDate: "2021-10-17",
-    notes: "主板烧了",
-    category: "电子设备",
-  },
-  {
-    id: 3,
-    name: "💻ROG 魔霸新锐2020",
-    purchaseDate: "2020-11-05",
-    price: 8999,
-    retirementDate: "2024-05-18",
-    warrantyDate: "2021-11-05",
-    notes: "2700出手",
-    category: "电子设备",
-  },
-  {
-    id: 4,
-    name: "🎧SONY WH-CH710N",
-    purchaseDate: "2022-03-29",
-    price: 557,
-    retirementDate: null,
-    warrantyDate: "2023-03-29",
-    notes: "不常用",
-    category: "电子设备",
-  },
-  {
-    id: 5,
-    name: "🎧Redmi Buds4",
-    purchaseDate: "2023-03-07",
-    price: 129,
-    retirementDate: "2024-06-19",
-    warrantyDate: "2024-03-07",
-    notes: "掉了",
-    category: "电子设备",
-  },
-  {
-    id: 6,
-    name: "🖱️Logitech PRO X SUPERLIGHT",
-    purchaseDate: "2023-04-22",
-    price: 707,
-    retirementDate: null,
-    warrantyDate: "2026-01-26",
-    notes: "CS箱子卖了买的",
-    category: "电子设备",
-  },
-  {
-    id: 7,
-    name: "📱Redmi K50",
-    purchaseDate: "2023-04-28",
-    price: 2399,
-    retirementDate: "2024-11-24",
-    warrantyDate: "2024-04-28",
-    notes: "换代",
-    category: "电子设备",
-  },
-  {
-    id: 8,
-    name: "💻Lenovo ThinkPad X280",
-    purchaseDate: "2024-05-07",
-    price: 1146,
-    retirementDate: null,
-    warrantyDate: "2025-05-07",
-    notes: "翻新机",
-    category: "电子设备",
-  },
-  {
-    id: 9,
-    name: "📱Apple iPhone 15Pro",
-    purchaseDate: "2024-11-23",
-    price: 7499,
-    retirementDate: null,
-    warrantyDate: "2025-11-23",
-    notes: "好贵",
-    category: "电子设备",
-  },
-  {
-    id: 10,
-    name: "🎧Apple AirPods 4 ANC",
-    purchaseDate: "2025-05-08",
-    price: 1061,
-    retirementDate: null,
-    warrantyDate: "2027-06-04",
-    notes: "p😭q",
-    category: "电子设备",
-  },
-  {
-    id: 11,
-    name: "🗂️UGREEN DXP4800 Plus",
-    purchaseDate: "2025-05-27",
-    price: 2350,
-    retirementDate: null,
-    warrantyDate: "2026-05-29",
-    notes: "UGOSPro还不错",
-    category: "电子设备",
-  },
-];
+// item data (externalized)
+
+let items = [];
+
+/**
+ * Flexibly parse date-like inputs.
+ * Accepts: Date, timestamp (ms/s), "YYYY-MM-DD", "YYYY/MM/DD", "YYYY.MM.DD", "YYYY-MM"
+ * Returns Date or null if invalid/empty (null/"0"/0).
+ */
+function parseDateFlexible(input) {
+  if (!input && input !== 0) return null;
+  if (input === null || input === "0" || input === 0) return null;
+
+  if (input instanceof Date) {
+    const t = input.getTime();
+    return isNaN(t) ? null : input;
+  }
+
+  if (
+    typeof input === "number" ||
+    (typeof input === "string" && /^\d+$/.test(input))
+  ) {
+    const n = Number(input);
+    // Heuristic: treat <= 1e11 as seconds, otherwise ms
+    const d = new Date(n > 1e11 ? n : n * 1000);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  if (typeof input === "string") {
+    const s = input.trim().replace(/[./]/g, "-");
+    const parts = s.split("-");
+    let normalized = s;
+    if (parts.length === 2) {
+      normalized = `${parts[0]}-${parts[1]}-01`;
+    }
+    const d1 = new Date(normalized);
+    if (!isNaN(d1.getTime())) return d1;
+    const d2 = new Date(normalized + "T00:00:00");
+    return isNaN(d2.getTime()) ? null : d2;
+  }
+
+  const d = new Date(input);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/**
+ * Load items from external JSON and refresh UI.
+ */
+async function loadItems() {
+  try {
+    const res = await fetch("items.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      items = data;
+    } else if (data && Array.isArray(data.items)) {
+      items = data.items;
+    } else {
+      items = [];
+      console.warn("items.json format not recognized");
+    }
+  } catch (err) {
+    console.error("Failed to load items.json:", err);
+    items = [];
+  }
+  // Refresh UI if functions are ready
+  if (typeof updateStatistics === "function") updateStatistics();
+  if (typeof animateStatsCounters === "function") animateStatsCounters();
+  if (typeof renderItems === "function") renderItems(items);
+  document.dispatchEvent(
+    new CustomEvent("itemsLoaded", { detail: { count: items.length } }),
+  );
+}
+
+// Kick off loading ASAP
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => loadItems());
+} else {
+  loadItems();
+}
+
+window.getItems = () => items;
+
+window.parseDateFlexible = parseDateFlexible;
+
+// debounce utility
+function debounce(fn, wait = 300) {
+  let timer;
+  const debounced = function (...args) {
+    const ctx = this;
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(ctx, args), wait);
+  };
+  debounced.flush = function (...args) {
+    clearTimeout(timer);
+    return fn.apply(this, args);
+  };
+  return debounced;
+}
 
 let globalTotalValue = 0;
+
 let globalTotalItems = 0;
 let globalAvgDailyCost = 0;
 
@@ -160,19 +147,30 @@ function updateRealTime() {
  * @param {object} item - The item object.
  * @returns {object} An object containing dailyCost, totalDays, daysUsed, and consumedValue.
  */
+
 function calculateDailyCost(item) {
-  const purchaseDate = new Date(item.purchaseDate);
+  const purchaseDate = parseDateFlexible(item.purchaseDate);
+
   const now = new Date();
 
+  if (!purchaseDate) {
+    return {
+      dailyCost: "0.00",
+      totalDays: 0,
+      daysUsed: 0,
+      consumedValue: "0.00",
+    };
+  }
+
   // 判断是否已退役
-  const parsedRetirementDate = item.retirementDate
-    ? new Date(item.retirementDate)
-    : null;
+
+  const parsedRetirementDate = parseDateFlexible(item.retirementDate);
+
   const isIndefiniteUse =
     item.retirementDate === null ||
     item.retirementDate === 0 ||
     item.retirementDate === "0" ||
-    (parsedRetirementDate && isNaN(parsedRetirementDate.getTime()));
+    !parsedRetirementDate;
 
   // 计算使用天数（关键修改）
   let daysUsed;
@@ -239,11 +237,19 @@ function calculateDailyCost(item) {
  * @param {object} item - The item object.
  * @returns {object} An object with status text and CSS class.
  */
+
 function getItemStatus(item) {
   const today = new Date();
-  const warrantyDate = new Date(item.warrantyDate);
-  const daysToWarranty = Math.ceil((warrantyDate - today) / (1000 * 3600 * 24));
+
+  const warrantyDate = parseDateFlexible(item.warrantyDate);
+
   const dict = typeof t === "function" ? t() : null;
+
+  if (!warrantyDate) {
+    return { text: dict ? dict.statusActive : "使用中", class: "active-tag" };
+  }
+
+  const daysToWarranty = Math.ceil((warrantyDate - today) / (1000 * 3600 * 24));
 
   if (warrantyDate < today) {
     return { text: dict ? dict.statusExpired : "已过保", class: "expired-tag" };
@@ -544,16 +550,29 @@ function animateStatsCounters() {
 }
 
 /**
+
  * Handles the search functionality based on user input.
+
  */
+
 function handleSearch() {
-  const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-  const filteredItems = items.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchTerm) ||
-      item.category.toLowerCase().includes(searchTerm) ||
-      item.notes.toLowerCase().includes(searchTerm),
-  );
+  const inputEl = document.getElementById("searchInput");
+  const raw = inputEl ? inputEl.value : "";
+  const searchTerm = String(raw || "")
+    .toLowerCase()
+    .trim();
+
+  const list = Array.isArray(items) ? items : [];
+  const filteredItems = list.filter((item) => {
+    const name = String(item?.name ?? "").toLowerCase();
+    const category = String(item?.category ?? "").toLowerCase();
+    const notes = String(item?.notes ?? "").toLowerCase();
+    return (
+      name.includes(searchTerm) ||
+      category.includes(searchTerm) ||
+      notes.includes(searchTerm)
+    );
+  });
   renderItems(filteredItems);
 }
 
@@ -562,16 +581,35 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRealTime();
   setInterval(updateRealTime, 1000);
 
-  updateStatistics();
-  animateStatsCounters();
-  renderItems(items);
+  const initialRender = () => {
+    updateStatistics();
 
-  document.getElementById("searchBtn").addEventListener("click", handleSearch);
+    animateStatsCounters();
+
+    renderItems(items);
+  };
+  if (Array.isArray(items) && items.length) initialRender();
+  document.addEventListener("itemsLoaded", initialRender);
+
+  const runSearch = debounce(handleSearch, 300);
+
   document
+    .getElementById("searchBtn")
+    .addEventListener("click", () => runSearch.flush());
+
+  document.getElementById("searchInput").addEventListener("input", runSearch);
+
+  document
+
     .getElementById("searchInput")
+
     .addEventListener("keypress", (event) => {
       if (event.key === "Enter") {
-        handleSearch();
+        if (typeof runSearch?.flush === "function") {
+          runSearch.flush();
+        } else {
+          handleSearch();
+        }
       }
     });
 
