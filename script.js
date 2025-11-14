@@ -260,78 +260,186 @@ function getItemStatus(item) {
  * Renders the list of items in the items grid.
  * @param {Array<object>} itemsToRender - An array of item objects to display.
  */
+
 function renderItems(itemsToRender) {
   const container = document.getElementById("itemsContainer");
+
   container.innerHTML = ""; // Clear previous items
 
   if (itemsToRender.length === 0) {
     const dict = typeof t === "function" ? t() : null;
+
     const emptyTitle = dict ? dict.emptyTitle : "未找到任何物品";
+
     const emptyText = dict
       ? dict.emptyText
       : "请尝试不同的搜索词或清除搜索条件。";
+
     container.innerHTML = `<div class="empty-state">
+
             <i class="fas fa-search"></i>
+
             <h3>${emptyTitle}</h3>
+
             <p>${emptyText}</p>
+
         </div>`;
+
     return;
   }
 
+  const template = document.getElementById("itemCardTemplate");
+
   itemsToRender.forEach((item) => {
     const cost = calculateDailyCost(item);
+
     const status = getItemStatus(item);
 
-    const card = document.createElement("div");
-    card.className = "item-card";
-    card.style.opacity = 0; // Set initial opacity for animation
-
-    // Display dynamic "days used" with language-specific unit
     const dict = typeof t === "function" ? t() : null;
-    const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
 
-    card.innerHTML = `
+    // Clone template if available; otherwise fallback to previous HTML method
+    if (template && template.content) {
+      const node = template.content.cloneNode(true);
+      const card = node.querySelector(".item-card");
+      if (card) {
+        card.style.opacity = 0; // initial opacity for animation
+      }
+
+      // helpers
+      const setText = (sel, value) => {
+        const el = node.querySelector(sel);
+        if (el) el.textContent = value;
+      };
+      const setLabel = (key, value) => {
+        const el = node.querySelector(`[data-i18n-key="${key}"]`);
+        if (el) el.textContent = value;
+      };
+
+      // Fill fields
+      setText('[data-field="name"]', item.name);
+      const priceEl = node.querySelector('[data-field="price"]');
+      if (priceEl) priceEl.textContent = item.price.toLocaleString();
+      node.querySelectorAll('[data-field="currency"]').forEach((c) => {
+        c.textContent = "¥";
+      });
+
+      const statusEl = node.querySelector('[data-field="statusText"]');
+      if (statusEl) {
+        statusEl.textContent = status.text;
+        statusEl.classList.add(status.class);
+      }
+
+      setText('[data-field="purchaseDate"]', item.purchaseDate);
+      setText('[data-field="warrantyDate"]', item.warrantyDate);
+      setText(
+        '[data-field="retirementDate"]',
+        item.retirementDate === null ||
+          item.retirementDate === 0 ||
+          item.retirementDate === "0"
+          ? dict
+            ? dict.inUse
+            : "使用中"
+          : item.retirementDate,
+      );
+
+      const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
+
+      setText('[data-field="dailyCost"]', cost.dailyCost);
+
+      setText('[data-field="daysUsed"]', daysUsedDisplay);
+
+      // Set translatable labels from lang.js
+      setLabel("purchaseDate", dict ? dict.purchaseDate : "购买日期");
+      setLabel("warrantyUntil", dict ? dict.warrantyUntil : "保修至");
+      setLabel("retirementDate", dict ? dict.retirementDate : "退役时间");
+      setLabel("costCalcTitle", dict ? dict.costCalcTitle : "成本计算");
+      setLabel("dailyCost", dict ? dict.dailyCost : "日均成本");
+      setLabel("daysUsed", dict ? dict.daysUsed : "已使用天数");
+
+      container.appendChild(node);
+    } else {
+      // Fallback: previous innerHTML method (kept for safety)
+      const card = document.createElement("div");
+      card.className = "item-card";
+      card.style.opacity = 0;
+
+      const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
+      card.innerHTML = `
                 <div class="item-header">
+
                     <h3>${item.name}</h3>
+
                     <div class="price">¥${item.price.toLocaleString()}</div>
+
                     <span class="status-tag ${status.class}">${status.text}</span>
+
                 </div>
+
                 <div class="item-body">
+
                     <div class="item-detail">
+
                         <span class="detail-label">${dict ? dict.purchaseDate : "购买日期"}</span>
+
                         <span class="detail-value">${item.purchaseDate}</span>
+
                     </div>
+
                     <div class="item-detail">
+
                         <span class="detail-label">${dict ? dict.warrantyUntil : "保修至"}</span>
+
                         <span class="detail-value">${item.warrantyDate}</span>
+
                     </div>
+
                     <div class="item-detail">
+
                         <span class="detail-label">${dict ? dict.retirementDate : "退役时间"}</span>
+
                         <span class="detail-value">${item.retirementDate === null || item.retirementDate === 0 || item.retirementDate === "0" ? (dict ? dict.inUse : "使用中") : item.retirementDate}</span>
+
                     </div>
+
                     <div class="cost-calculation">
+
                         <div class="title">${dict ? dict.costCalcTitle : "成本计算"}</div>
+
                         <div class="item-detail">
+
                             <span class="detail-label">${dict ? dict.dailyCost : "日均成本"}</span>
+
                             <span class="detail-value">¥${cost.dailyCost}</span>
+
                         </div>
+
                         <div class="item-detail">
+
                             <span class="detail-label">${dict ? dict.daysUsed : "已使用天数"}</span>
+
                             <span class="detail-value">${daysUsedDisplay}</span>
+
                         </div>
+
                     </div>
-                    <!-- Removed "备注" (Notes) section -->
+
                 </div>
             `;
-    container.appendChild(card);
+      container.appendChild(card);
+    }
   });
 
   // Staggered slide-in animation for item cards
+
   anime({
     targets: ".item-card",
+
     translateY: [20, 0],
+
     opacity: [0, 1],
+
     delay: anime.stagger(100),
+
     easing: "easeOutQuad",
   });
 }
@@ -475,7 +583,13 @@ document.addEventListener("DOMContentLoaded", () => {
       renderItems(items);
     });
   }
+  // Listen for global languageChanged event and re-render visible UI
+  document.addEventListener("languageChanged", () => {
+    updateStatistics();
+    renderItems(items);
+    updateRealTime();
+  });
+
   // i18n definitions removed from script.js.
   // Use global currentLang() and t() provided by lang.js.
-  // languageChanged event is handled above via the select listener.
 });
