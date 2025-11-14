@@ -52,6 +52,167 @@ header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.7);
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.pill-btn {
+    appearance: none;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    position: relative;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 2px 6px rgba(67, 97, 238, 0.3);
+    transition:
+        background 0.3s ease,
+        transform 0.25s ease,
+        box-shadow 0.3s ease;
+}
+
+.pill-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px -4px rgba(67, 97, 238, 0.4);
+}
+
+.pill-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.35);
+}
+
+.pill-btn.lang-en {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+.pill-btn.theme-light {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #1e3a8a;
+}
+
+.pill-btn.theme-dark {
+    background: linear-gradient(135deg, #111827, #1f2937);
+}
+
+@media (max-width: 480px) {
+    .header-controls {
+        position: absolute;
+        top: 12px;
+        right: 20px;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+    .pill-btn {
+        padding: 6px 14px;
+        font-size: 0.7rem;
+    }
+}
+
+.lang-switcher:hover,
+.theme-switcher:hover {
+    box-shadow: 0 6px 16px -6px rgba(67, 97, 238, 0.25);
+}
+
+.lang-switcher:focus-within,
+.theme-switcher:focus-within {
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+}
+
+/* legacy select styling removed (replaced by .pill-btn) */
+
+.theme-switcher select {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+.theme-switcher select.dark-active {
+    background: linear-gradient(135deg, #111827, #1f2937);
+}
+
+.theme-switcher select.light-active {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #1e3a8a;
+}
+.lang-switcher select:hover,
+.theme-switcher select:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px -4px rgba(67, 97, 238, 0.4);
+}
+
+/* focus styles handled by .pill-btn:focus */
+
+@media (max-width: 480px) {
+    .lang-switcher,
+    .theme-switcher {
+        position: absolute;
+        top: 12px;
+        right: 20px;
+        padding: 4px 10px;
+    }
+
+    .theme-switcher {
+        top: 56px;
+    }
+
+    .lang-switcher select,
+    .theme-switcher select {
+        padding: 6px 24px 6px 12px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Theme system */
+:root[data-theme="dark"] {
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --secondary: #6366f1;
+    --success: #06b6d4;
+    --light: #1f2937;
+    --dark: #f1f5f9;
+    --darker: #f8fafc;
+    --danger: #f43f5e;
+    --warning: #fbbf24;
+    --gray: #94a3b8;
+    --card-bg: rgba(30, 41, 59, 0.9);
+    --time-bg: rgba(59, 130, 246, 0.15);
+    background-color: #0f172a;
+    color-scheme: dark;
+}
+
+:root[data-theme="dark"] body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+:root[data-theme="dark"] header {
+    background: var(--card-bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .item-card,
+:root[data-theme="dark"] .items-section,
+:root[data-theme="dark"] .stat-card {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .item-detail {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .cost-calculation {
+    background: #162032;
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
 .logo {
     display: flex;
     align-items: center;
