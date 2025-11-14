@@ -115,7 +115,7 @@
 
       emptyText: "Try different keywords or clear search filters.",
 
-      statusExpired: "Warranty expired",
+      statusExpired: "Expired",
 
       statusExpiring: (d) => `Warranty expiring (${d}d)`,
 
