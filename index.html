@@ -109,8 +109,6 @@
                             <div class="value" id="avgDailyCost">¥0.00</div>
                         </div>
                     </div>
-
-                    <!-- Removed Summary Card section -->
                 </div>
 
                 <!-- Items List Section -->
@@ -158,6 +156,74 @@
                 </div>
             </div>
         </div>
+
+        <!-- Reusable item card template for rendering (used by script.js) -->
+        <template id="itemCardTemplate">
+            <div class="item-card">
+                <div class="item-header">
+                    <h3 data-field="name"></h3>
+                    <div class="price">
+                        <span data-field="currency">¥</span
+                        ><span data-field="price"></span>
+                    </div>
+                    <span class="status-tag" data-field="statusText"></span>
+                </div>
+                <div class="item-body">
+                    <div class="item-detail">
+                        <span class="detail-label" data-i18n-key="purchaseDate"
+                            >购买日期</span
+                        >
+                        <span
+                            class="detail-value"
+                            data-field="purchaseDate"
+                        ></span>
+                    </div>
+                    <div class="item-detail">
+                        <span class="detail-label" data-i18n-key="warrantyUntil"
+                            >保修至</span
+                        >
+                        <span
+                            class="detail-value"
+                            data-field="warrantyDate"
+                        ></span>
+                    </div>
+                    <div class="item-detail">
+                        <span
+                            class="detail-label"
+                            data-i18n-key="retirementDate"
+                            >退役时间</span
+                        >
+                        <span
+                            class="detail-value"
+                            data-field="retirementDate"
+                        ></span>
+                    </div>
+                    <div class="cost-calculation">
+                        <div class="title" data-i18n-key="costCalcTitle">
+                            成本计算
+                        </div>
+                        <div class="item-detail">
+                            <span class="detail-label" data-i18n-key="dailyCost"
+                                >日均成本</span
+                            >
+                            <span class="detail-value">
+                                <span data-field="currency">¥</span
+                                ><span data-field="dailyCost"></span>
+                            </span>
+                        </div>
+                        <div class="item-detail">
+                            <span class="detail-label" data-i18n-key="daysUsed"
+                                >已使用天数</span
+                            >
+                            <span
+                                class="detail-value"
+                                data-field="daysUsed"
+                            ></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
 
         <script src="lang.js"></script>
         <script src="theme.js"></script>
