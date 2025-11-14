@@ -117,7 +117,7 @@
 
       statusExpired: "Expired",
 
-      statusExpiring: (d) => `Warranty expiring (${d}d)`,
+      statusExpiring: (d) => `Expiring (${d}d)`,
 
       statusActive: "Active",
 
