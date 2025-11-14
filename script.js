@@ -136,21 +136,21 @@ function updateRealTime() {
     hour12: false,
   };
 
-  const dateStr = now.toLocaleDateString("zh-CN", dateOptions);
-  const timeStr = now.toLocaleTimeString("zh-CN", timeOptions);
-  const dayOfWeek = [
-    "星期日",
-    "星期一",
-    "星期二",
-    "星期三",
-    "星期四",
-    "星期五",
-    "星期六",
-  ][now.getDay()];
+  const lang = typeof currentLang === "function" ? currentLang() : "zh-CN";
+  const locale = lang === "en" ? "en-US" : "zh-CN";
+  const dateStr = now.toLocaleDateString(locale, dateOptions);
+  const timeStr = now.toLocaleTimeString(locale, timeOptions);
+  const dayNames =
+    typeof t === "function"
+      ? t().dayNames
+      : ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+  const dayOfWeek = dayNames[now.getDay()];
+  const ordinalPrefix = typeof t === "function" ? t().dayOrdinalPrefix : "第";
+  const ordinalSuffix = typeof t === "function" ? t().dayOrdinalSuffix : "天";
 
   document.getElementById("currentDateTime").textContent = dateStr;
   document.getElementById("currentDayInfo").textContent =
-    `${dayOfWeek} | 第${Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)}天`;
+    `${dayOfWeek} | ${ordinalPrefix}${Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)}${ordinalSuffix}`;
   document.getElementById("systemTime").textContent = timeStr;
 }
 
@@ -243,16 +243,17 @@ function getItemStatus(item) {
   const today = new Date();
   const warrantyDate = new Date(item.warrantyDate);
   const daysToWarranty = Math.ceil((warrantyDate - today) / (1000 * 3600 * 24));
+  const dict = typeof t === "function" ? t() : null;
 
   if (warrantyDate < today) {
-    return { text: "已过保", class: "expired-tag" };
+    return { text: dict ? dict.statusExpired : "已过保", class: "expired-tag" };
   } else if (daysToWarranty <= 30 && daysToWarranty > 0) {
-    return {
-      text: `保修即将到期 (${daysToWarranty}天)`,
-      class: "expiring-tag",
-    };
+    const text = dict
+      ? dict.statusExpiring(daysToWarranty)
+      : `保修即将到期 (${daysToWarranty}天)`;
+    return { text, class: "expiring-tag" };
   }
-  return { text: "使用中", class: "active-tag" };
+  return { text: dict ? dict.statusActive : "使用中", class: "active-tag" };
 }
 
 /**
@@ -264,10 +265,15 @@ function renderItems(itemsToRender) {
   container.innerHTML = ""; // Clear previous items
 
   if (itemsToRender.length === 0) {
+    const dict = typeof t === "function" ? t() : null;
+    const emptyTitle = dict ? dict.emptyTitle : "未找到任何物品";
+    const emptyText = dict
+      ? dict.emptyText
+      : "请尝试不同的搜索词或清除搜索条件。";
     container.innerHTML = `<div class="empty-state">
             <i class="fas fa-search"></i>
-            <h3>未找到任何物品</h3>
-            <p>请尝试不同的搜索词或清除搜索条件。</p>
+            <h3>${emptyTitle}</h3>
+            <p>${emptyText}</p>
         </div>`;
     return;
   }
@@ -280,42 +286,43 @@ function renderItems(itemsToRender) {
     card.className = "item-card";
     card.style.opacity = 0; // Set initial opacity for animation
 
-    // Display "已使用天数" as just the number of days, regardless of retirementDate
-    const daysUsedDisplay = `${cost.daysUsed} 天`;
+    // Display dynamic "days used" with language-specific unit
+    const dict = typeof t === "function" ? t() : null;
+    const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
 
     card.innerHTML = `
-            <div class="item-header">
-                <h3>${item.name}</h3>
-                <div class="price">¥${item.price.toLocaleString()}</div>
-                <span class="status-tag ${status.class}">${status.text}</span>
-            </div>
-            <div class="item-body">
-                <div class="item-detail">
-                    <span class="detail-label">购买日期</span>
-                    <span class="detail-value">${item.purchaseDate}</span>
+                <div class="item-header">
+                    <h3>${item.name}</h3>
+                    <div class="price">¥${item.price.toLocaleString()}</div>
+                    <span class="status-tag ${status.class}">${status.text}</span>
                 </div>
-                <div class="item-detail">
-                    <span class="detail-label">保修至</span>
-                    <span class="detail-value">${item.warrantyDate}</span>
-                </div>
-                <div class="item-detail">
-                    <span class="detail-label">退役时间</span>
-                    <span class="detail-value">${item.retirementDate === null || item.retirementDate === 0 || item.retirementDate === "0" ? "使用中" : item.retirementDate}</span>
-                </div>
-                <div class="cost-calculation">
-                    <div class="title">成本计算</div>
+                <div class="item-body">
                     <div class="item-detail">
-                        <span class="detail-label">日均成本</span>
-                        <span class="detail-value">¥${cost.dailyCost}</span>
+                        <span class="detail-label">${dict ? dict.purchaseDate : "购买日期"}</span>
+                        <span class="detail-value">${item.purchaseDate}</span>
                     </div>
                     <div class="item-detail">
-                        <span class="detail-label">已使用天数</span>
-                        <span class="detail-value">${daysUsedDisplay}</span>
+                        <span class="detail-label">${dict ? dict.warrantyUntil : "保修至"}</span>
+                        <span class="detail-value">${item.warrantyDate}</span>
                     </div>
+                    <div class="item-detail">
+                        <span class="detail-label">${dict ? dict.retirementDate : "退役时间"}</span>
+                        <span class="detail-value">${item.retirementDate === null || item.retirementDate === 0 || item.retirementDate === "0" ? (dict ? dict.inUse : "使用中") : item.retirementDate}</span>
+                    </div>
+                    <div class="cost-calculation">
+                        <div class="title">${dict ? dict.costCalcTitle : "成本计算"}</div>
+                        <div class="item-detail">
+                            <span class="detail-label">${dict ? dict.dailyCost : "日均成本"}</span>
+                            <span class="detail-value">¥${cost.dailyCost}</span>
+                        </div>
+                        <div class="item-detail">
+                            <span class="detail-label">${dict ? dict.daysUsed : "已使用天数"}</span>
+                            <span class="detail-value">${daysUsedDisplay}</span>
+                        </div>
+                    </div>
+                    <!-- Removed "备注" (Notes) section -->
                 </div>
-                <!-- Removed "备注" (Notes) section -->
-            </div>
-        `;
+            `;
     container.appendChild(card);
   });
 
@@ -336,24 +343,11 @@ function renderItems(itemsToRender) {
 function updateStatistics() {
   let totalValue = 0;
   let totalDailyCost = 0;
-  let expiringItems = 0;
-  let expiredItems = 0;
-  let highValueItems = 0;
-  // totalConsumedValue is no longer needed for display or asset health calculation
 
   items.forEach((item) => {
     totalValue += item.price;
     const cost = calculateDailyCost(item);
     totalDailyCost += parseFloat(cost.dailyCost);
-
-    // Count high-value items (price > 5000)
-    if (item.price > 5000) {
-      highValueItems++;
-    }
-
-    const status = getItemStatus(item);
-    if (status.class === "expiring-tag") expiringItems++;
-    else if (status.class === "expired-tag") expiredItems++;
   });
 
   // Store values for main counter animations
@@ -361,20 +355,27 @@ function updateStatistics() {
   globalTotalItems = items.length;
   globalAvgDailyCost = totalDailyCost;
 
-  // Update bottom info bar
-  document.getElementById("infoTotalItems").textContent = items.length;
-  document.getElementById("infoTotalValue").textContent =
-    `¥${totalValue.toLocaleString()}`;
+  // Build translated footer labels
+  const dict = typeof t === "function" ? t() : null;
+  const updatedLabel = dict ? dict.systemDataUpdated : "系统数据更新时间：";
+  const itemsLabel = dict ? dict.currentItemsCount : "当前物品总数：";
+  const valueLabel = dict ? dict.totalValueFooter : "总价值：";
 
   const now = new Date();
-  document.getElementById("updateTime").textContent = now.toLocaleDateString(
-    "zh-CN",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    },
-  );
+  const locale =
+    typeof currentLang === "function" && currentLang() === "en"
+      ? "en-US"
+      : "zh-CN";
+  const dateStr = now.toLocaleDateString(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const footer = document.getElementById("systemDataInfo");
+  if (footer) {
+    footer.innerHTML = `${updatedLabel}<span id="updateTime">${dateStr}</span> | ${itemsLabel}<span id="infoTotalItems">${items.length}</span> | ${valueLabel}<span id="infoTotalValue">¥${totalValue.toLocaleString()}</span>`;
+  }
 }
 
 /**
@@ -451,11 +452,11 @@ function handleSearch() {
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
   updateRealTime();
-  setInterval(updateRealTime, 1000); // Update time every second
+  setInterval(updateRealTime, 1000);
 
   updateStatistics();
   animateStatsCounters();
-  renderItems(items); // Initial render of all items
+  renderItems(items);
 
   document.getElementById("searchBtn").addEventListener("click", handleSearch);
   document
@@ -465,4 +466,16 @@ document.addEventListener("DOMContentLoaded", () => {
         handleSearch();
       }
     });
+
+  // Re-render translated dynamic areas when language changes
+  const langSel = document.getElementById("langSwitcher");
+  if (langSel) {
+    langSel.addEventListener("change", () => {
+      updateStatistics();
+      renderItems(items);
+    });
+  }
+  // i18n definitions removed from script.js.
+  // Use global currentLang() and t() provided by lang.js.
+  // languageChanged event is handled above via the select listener.
 });
