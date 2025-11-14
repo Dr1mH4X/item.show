@@ -10,6 +10,21 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
         <link rel="stylesheet" href="styles.css" />
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-K7LRLJVPS7"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-K7LRLJVPS7");
+        </script>
+        <!-- Google tag (gtag.js) -->
     </head>
     <body>
         <!-- Header Section -->
@@ -17,6 +32,33 @@
             <div class="logo">
                 <i class="fas fa-boxes"></i>
                 <h1 id="appTitle">item.show</h1>
+            </div>
+            <div class="header-controls">
+                <!-- Language toggle pill -->
+                <button id="langToggle" class="pill-btn" data-lang="zh-CN">
+                    中文
+                </button>
+                <!-- Theme toggle pill -->
+                <button
+                    id="themeToggle"
+                    class="pill-btn"
+                    data-mode="auto"
+                    title="Auto / Light / Dark"
+                >
+                    Auto
+                </button>
+                <!-- Hidden legacy selects retained temporarily for script compatibility -->
+                <div style="display: none">
+                    <select id="langSwitcher">
+                        <option value="zh-CN">中文</option>
+                        <option value="en">English</option>
+                    </select>
+                    <select id="themeSwitcher">
+                        <option value="auto">Auto</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
             </div>
         </header>
 
@@ -32,8 +74,13 @@
                         </div>
                     </div>
                     <div class="time-info">
-                        <p>所有资产成本均基于当前时间计算</p>
-                        <p>系统时间: <span id="systemTime"></span></p>
+                        <p id="assetsCostNote">
+                            所有资产成本均基于当前时间计算
+                        </p>
+                        <p id="systemTimeLabel">
+                            <span class="label-text">系统时间:</span>
+                            <span id="systemTime"></span>
+                        </p>
                     </div>
                 </div>
 
@@ -44,21 +91,21 @@
                             <div class="icon">
                                 <i class="fas fa-dollar-sign"></i>
                             </div>
-                            <h3>总资产价值</h3>
+                            <h3 id="totalValueLabel">总资产价值</h3>
                             <div class="value" id="totalValue">¥0</div>
                         </div>
                         <div class="stat-card">
                             <div class="icon">
                                 <i class="fas fa-box"></i>
                             </div>
-                            <h3>物品总数</h3>
+                            <h3 id="totalItemsLabel">物品总数</h3>
                             <div class="value" id="totalItems">0</div>
                         </div>
                         <div class="stat-card">
                             <div class="icon">
                                 <i class="fas fa-calendar-day"></i>
                             </div>
-                            <h3>平均每日成本</h3>
+                            <h3 id="avgDailyCostLabel">平均每日成本</h3>
                             <div class="value" id="avgDailyCost">¥0.00</div>
                         </div>
                     </div>
@@ -69,15 +116,19 @@
                 <!-- Items List Section -->
                 <div class="items-section">
                     <div class="section-header">
-                        <h2><i class="fas fa-list"></i> 物品资产清单</h2>
+                        <h2 id="itemsListTitle">
+                            <i class="fas fa-list"></i> 物品资产清单
+                        </h2>
                         <div class="search-box">
                             <input
                                 type="text"
                                 id="searchInput"
                                 placeholder="搜索物品名称、类别或备注..."
+                                data-i18n-placeholder="searchPlaceholder"
                             />
                             <button id="searchBtn">
-                                <i class="fas fa-search"></i> 搜索
+                                <i class="fas fa-search"></i>
+                                <span id="searchBtnText">搜索</span>
                             </button>
                         </div>
                     </div>
@@ -87,7 +138,7 @@
                     </div>
 
                     <div class="system-info">
-                        <p>
+                        <p id="systemDataInfo">
                             系统数据更新时间：<span id="updateTime"
                                 >2000年00月00日</span
                             >
@@ -96,6 +147,7 @@
                         </p>
                         <p>
                             <a
+                                id="copyrightLink"
                                 href="mailto:cyy00@dreamhax.cc"
                                 style="color: inherit; text-decoration: none"
                                 >© 2025 item.dreamhax.cc. All rights
@@ -107,6 +159,8 @@
             </div>
         </div>
 
+        <script src="lang.js"></script>
+        <script src="theme.js"></script>
         <script src="script.js"></script>
     </body>
 </html>
