@@ -1,18 +1,33 @@
 :root {
     --primary: #4361ee;
+
     --primary-light: #5a7bfd;
+
     --secondary: #3f37c9;
+
     --success: #4cc9f0;
+
     --light: #f8f9fa;
+
     --dark: #212529;
+
     --darker: #121826;
+
     --danger: #f72585;
+
     --warning: #ffb703;
+
     --gray: #6c757d;
+
     --card-bg: rgba(255, 255, 255, 0.92);
+
     --time-bg: rgba(67, 97, 238, 0.1);
+
     --header-height: 80px;
+
     --card-spacing: 30px;
+
+    color-scheme: light;
 }
 
 * {
@@ -180,22 +195,106 @@ header {
     }
 }
 
-/* Theme system */
 :root[data-theme="dark"] {
     --primary: #3b82f6;
+
     --primary-light: #60a5fa;
+
     --secondary: #6366f1;
+
     --success: #06b6d4;
+
     --light: #1f2937;
+
     --dark: #f1f5f9;
+
     --darker: #f8fafc;
+
     --danger: #f43f5e;
+
     --warning: #fbbf24;
+
     --gray: #94a3b8;
+
     --card-bg: rgba(30, 41, 59, 0.9);
+
     --time-bg: rgba(59, 130, 246, 0.15);
+
     background-color: #0f172a;
+
     color-scheme: dark;
+}
+
+/* Form controls and autofill improvements */
+input,
+select,
+textarea,
+button {
+    accent-color: var(--primary);
+}
+
+/* Improve focus ring for inputs (light) */
+.search-box input:focus {
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+}
+
+/* Placeholder color (light) */
+::placeholder {
+    color: var(--gray);
+    opacity: 0.8;
+}
+
+/* Autofill */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-text-fill-color: inherit;
+    caret-color: inherit;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Dark theme form controls */
+:root[data-theme="dark"] .search-box input {
+    background-color: #0f172a;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .search-box input:focus {
+    border-color: rgba(59, 130, 246, 0.55);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+}
+
+:root[data-theme="dark"] ::placeholder {
+    color: #94a3b8;
+    opacity: 0.9;
+}
+
+:root[data-theme="dark"] input:-webkit-autofill,
+:root[data-theme="dark"] textarea:-webkit-autofill,
+:root[data-theme="dark"] select:-webkit-autofill {
+    -webkit-text-fill-color: #e2e8f0;
+    box-shadow: 0 0 0px 1000px #0f172a inset;
+}
+
+/* Dark mode contrast tweaks */
+:root[data-theme="dark"] .items-section,
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .item-card {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .detail-label {
+    color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .detail-value {
+    color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .cost-calculation {
+    background: #0f1a2b;
+    border-color: rgba(59, 130, 246, 0.35);
 }
 
 :root[data-theme="dark"] body {
@@ -208,7 +307,17 @@ header {
 
 :root[data-theme="dark"] header {
     background: var(--card-bg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Increase contrast for the time banner in dark mode */
+:root[data-theme="dark"] .time-banner {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #e2e8f0;
+}
+:root[data-theme="dark"] .time-banner .current-time i {
+    color: var(--primary);
 }
 
 :root[data-theme="dark"] .item-card,
@@ -440,10 +549,17 @@ header {
 
 .search-box input {
     min-width: 250px;
+
     padding: 12px 18px;
+
     border: 1px solid #ddd;
+
     border-radius: 12px;
+
     font-size: 1rem;
+
+    background-color: #ffffff;
+    color: var(--dark);
     transition: all 0.3s ease;
 }
 
@@ -718,6 +834,7 @@ header {
 @media (prefers-reduced-motion: reduce) {
     * {
         transition: none !important;
+
         animation: none !important;
     }
 }
