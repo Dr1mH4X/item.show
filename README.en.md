@@ -15,17 +15,6 @@ A lightweight static dashboard to browse your personal items and their lifecycle
 - `CNAME` — optional custom domain (if using GitHub Pages)
 
 
-## Running from file:// (CORS)
-
-If you open `index.html` directly via file://, the browser will block `fetch('items.json')` due to CORS/same-origin rules. You will see a message like:
-
-- Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at file:///.../items.json. (Reason: CORS request not http)
-
-Solutions:
-- Serve the folder via a local web server (see Quick start).
-- Or, for development only, inline the data in `script.js` (not recommended for production).
-
-
 ## items.json schema
 
 Each item is an object with the following fields:
@@ -91,9 +80,6 @@ Notes:
 
 
 ## FAQ
-
-Q: Why do I see a CORS error loading items.json?  
-- A: You are probably opening via file://. Use a local web server (http:// or https://).
 
 Q: How do I change the language or theme?  
 - A: Update `#langSwitcher` / use the language pill; call `window.applyThemeMode('auto'|'light'|'dark')` or use the theme pill.
