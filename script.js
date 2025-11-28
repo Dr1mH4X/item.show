@@ -1,12 +1,6 @@
 // item data (externalized)
 
 let items = [];
-
-/**
- * Flexibly parse date-like inputs.
- * Accepts: Date, timestamp (ms/s), "YYYY-MM-DD", "YYYY/MM/DD", "YYYY.MM.DD", "YYYY-MM"
- * Returns Date or null if invalid/empty (null/"0"/0).
- */
 function parseDateFlexible(input) {
   if (!input && input !== 0) return null;
   if (input === null || input === "0" || input === 0) return null;
@@ -102,6 +96,7 @@ let globalTotalValue = 0;
 
 let globalTotalItems = 0;
 let globalAvgDailyCost = 0;
+let currentFilter = "all";
 
 /**
  * Updates the current date and time displayed in the banner.
@@ -269,19 +264,21 @@ function getItemStatus(item) {
 
 function renderItems(itemsToRender) {
   const container = document.getElementById("itemsContainer");
+  const oldItems = container.querySelectorAll(".item-card, .empty-state");
 
-  container.innerHTML = ""; // Clear previous items
+  const performRender = () => {
+    container.innerHTML = ""; // Clear previous items
 
-  if (itemsToRender.length === 0) {
-    const dict = typeof t === "function" ? t() : null;
+    if (itemsToRender.length === 0) {
+      const dict = typeof t === "function" ? t() : null;
 
-    const emptyTitle = dict ? dict.emptyTitle : "未找到任何物品";
+      const emptyTitle = dict ? dict.emptyTitle : "未找到任何物品";
 
-    const emptyText = dict
-      ? dict.emptyText
-      : "请尝试不同的搜索词或清除搜索条件。";
+      const emptyText = dict
+        ? dict.emptyText
+        : "请尝试不同的搜索词或清除搜索条件。";
 
-    container.innerHTML = `<div class="empty-state">
+      container.innerHTML = `<div class="empty-state" style="opacity: 0">
 
             <i class="fas fa-search"></i>
 
@@ -291,86 +288,93 @@ function renderItems(itemsToRender) {
 
         </div>`;
 
-    return;
-  }
-
-  const template = document.getElementById("itemCardTemplate");
-
-  itemsToRender.forEach((item) => {
-    const cost = calculateDailyCost(item);
-
-    const status = getItemStatus(item);
-
-    const dict = typeof t === "function" ? t() : null;
-
-    // Clone template if available; otherwise fallback to previous HTML method
-    if (template && template.content) {
-      const node = template.content.cloneNode(true);
-      const card = node.querySelector(".item-card");
-      if (card) {
-        card.style.opacity = 0; // initial opacity for animation
-      }
-
-      // helpers
-      const setText = (sel, value) => {
-        const el = node.querySelector(sel);
-        if (el) el.textContent = value;
-      };
-      const setLabel = (key, value) => {
-        const el = node.querySelector(`[data-i18n-key="${key}"]`);
-        if (el) el.textContent = value;
-      };
-
-      // Fill fields
-      setText('[data-field="name"]', item.name);
-      const priceEl = node.querySelector('[data-field="price"]');
-      if (priceEl) priceEl.textContent = item.price.toLocaleString();
-      node.querySelectorAll('[data-field="currency"]').forEach((c) => {
-        c.textContent = "¥";
+      anime({
+        targets: ".empty-state",
+        opacity: [0, 1],
+        duration: 400,
+        easing: "easeOutQuad",
       });
 
-      const statusEl = node.querySelector('[data-field="statusText"]');
-      if (statusEl) {
-        statusEl.textContent = status.text;
-        statusEl.classList.add(status.class);
-      }
+      return;
+    }
 
-      setText('[data-field="purchaseDate"]', item.purchaseDate);
-      setText('[data-field="warrantyDate"]', item.warrantyDate);
-      setText(
-        '[data-field="retirementDate"]',
-        item.retirementDate === null ||
-          item.retirementDate === 0 ||
-          item.retirementDate === "0"
-          ? dict
-            ? dict.inUse
-            : "使用中"
-          : item.retirementDate,
-      );
+    const template = document.getElementById("itemCardTemplate");
 
-      const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
+    itemsToRender.forEach((item) => {
+      const cost = calculateDailyCost(item);
 
-      setText('[data-field="dailyCost"]', cost.dailyCost);
+      const status = getItemStatus(item);
 
-      setText('[data-field="daysUsed"]', daysUsedDisplay);
+      const dict = typeof t === "function" ? t() : null;
 
-      // Set translatable labels from lang.js
-      setLabel("purchaseDate", dict ? dict.purchaseDate : "购买日期");
-      setLabel("warrantyUntil", dict ? dict.warrantyUntil : "保修至");
-      setLabel("retirementDate", dict ? dict.retirementDate : "退役时间");
-      setLabel("costCalcTitle", dict ? dict.costCalcTitle : "成本计算");
-      setLabel("dailyCost", dict ? dict.dailyCost : "日均成本");
-      setLabel("daysUsed", dict ? dict.daysUsed : "已使用天数");
+      // Clone template if available; otherwise fallback to previous HTML method
+      if (template && template.content) {
+        const node = template.content.cloneNode(true);
+        const card = node.querySelector(".item-card");
+        if (card) {
+          card.style.opacity = 0; // initial opacity for animation
+        }
 
-      container.appendChild(node);
-    } else {
-      // Fallback: previous innerHTML method (kept for safety)
-      const card = document.createElement("div");
-      card.className = "item-card";
-      card.style.opacity = 0;
+        // helpers
+        const setText = (sel, value) => {
+          const el = node.querySelector(sel);
+          if (el) el.textContent = value;
+        };
+        const setLabel = (key, value) => {
+          const el = node.querySelector(`[data-i18n-key="${key}"]`);
+          if (el) el.textContent = value;
+        };
 
-      const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
-      card.innerHTML = `
+        // Fill fields
+        setText('[data-field="name"]', item.name);
+        const priceEl = node.querySelector('[data-field="price"]');
+        if (priceEl) priceEl.textContent = item.price.toLocaleString();
+        node.querySelectorAll('[data-field="currency"]').forEach((c) => {
+          c.textContent = "¥";
+        });
+
+        const statusEl = node.querySelector('[data-field="statusText"]');
+        if (statusEl) {
+          statusEl.textContent = status.text;
+          statusEl.classList.add(status.class);
+        }
+
+        setText('[data-field="purchaseDate"]', item.purchaseDate);
+        setText('[data-field="warrantyDate"]', item.warrantyDate);
+        setText(
+          '[data-field="retirementDate"]',
+          item.retirementDate === null ||
+            item.retirementDate === 0 ||
+            item.retirementDate === "0"
+            ? dict
+              ? dict.inUse
+              : "使用中"
+            : item.retirementDate,
+        );
+
+        const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
+
+        setText('[data-field="dailyCost"]', cost.dailyCost);
+
+        setText('[data-field="daysUsed"]', daysUsedDisplay);
+
+        // Set translatable labels from lang.js
+        setLabel("purchaseDate", dict ? dict.purchaseDate : "购买日期");
+        setLabel("warrantyUntil", dict ? dict.warrantyUntil : "保修至");
+        setLabel("retirementDate", dict ? dict.retirementDate : "退役时间");
+        setLabel("costCalcTitle", dict ? dict.costCalcTitle : "成本计算");
+        setLabel("dailyCost", dict ? dict.dailyCost : "日均成本");
+        setLabel("daysUsed", dict ? dict.daysUsed : "已使用天数");
+
+        container.appendChild(node);
+      } else {
+        // Fallback: previous innerHTML method (kept for safety)
+        const card = document.createElement("div");
+        card.className = "item-card";
+        card.style.opacity = 0;
+
+        const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
+        card.innerHTML = `
                 <div class="item-header">
 
                     <h3>${item.name}</h3>
@@ -431,23 +435,32 @@ function renderItems(itemsToRender) {
 
                 </div>
             `;
-      container.appendChild(card);
-    }
-  });
+        container.appendChild(card);
+      }
+    });
 
-  // Staggered slide-in animation for item cards
+    // Staggered slide-in animation for item cards
+    anime({
+      targets: ".item-card",
+      translateY: [50, 0],
+      opacity: [0, 1],
+      delay: anime.stagger(100, { start: 100 }),
+      easing: "spring(1, 80, 10, 0)",
+    });
+  };
 
-  anime({
-    targets: ".item-card",
-
-    translateY: [20, 0],
-
-    opacity: [0, 1],
-
-    delay: anime.stagger(100),
-
-    easing: "easeOutQuad",
-  });
+  if (oldItems.length > 0) {
+    anime({
+      targets: oldItems,
+      opacity: 0,
+      scale: 0.95,
+      duration: 200,
+      easing: "easeInQuad",
+      complete: performRender,
+    });
+  } else {
+    performRender();
+  }
 }
 
 /**
@@ -509,8 +522,7 @@ function animateStatsCounters() {
   anime({
     targets: { num: 0 },
     num: globalTotalValue,
-    easing: "easeOutQuad",
-    duration: 1500,
+    easing: "spring(1, 80, 10, 0)",
     update: (anim) => {
       totalValueElement.textContent = `¥${Math.round(anim.animatables[0].target.num).toLocaleString()}`;
     },
@@ -523,8 +535,7 @@ function animateStatsCounters() {
   anime({
     targets: { num: 0 },
     num: globalTotalItems,
-    easing: "easeOutQuad",
-    duration: 1200,
+    easing: "spring(1, 80, 10, 0)",
     round: 1,
     update: (anim) => {
       totalItemsElement.textContent = anim.animatables[0].target.num;
@@ -538,8 +549,7 @@ function animateStatsCounters() {
   anime({
     targets: { num: 0 },
     num: globalAvgDailyCost,
-    easing: "easeOutQuad",
-    duration: 1500,
+    easing: "spring(1, 80, 10, 0)",
     update: (anim) => {
       avgDailyCostElement.textContent = `¥${anim.animatables[0].target.num.toFixed(2)}`;
     },
@@ -555,6 +565,124 @@ function animateStatsCounters() {
 
  */
 
+function initFilters() {
+  const bar = document.getElementById("categoryFilter");
+  if (!bar) return;
+
+  const categories = [
+    "all",
+    ...new Set(items.map((i) => i.category).filter(Boolean)),
+  ];
+
+  while (bar.children.length > 2) bar.removeChild(bar.lastChild);
+
+  categories.forEach((cat) => {
+    if (cat === "all") return;
+    const btn = document.createElement("button");
+    btn.className = "filter-btn";
+    btn.textContent = cat;
+    btn.dataset.cat = cat;
+    bar.appendChild(btn);
+  });
+
+  const bg = bar.querySelector(".filter-pill-bg");
+  const btns = bar.querySelectorAll(".filter-btn");
+
+  function movePillTo(targetBtn) {
+    anime.set(bg, { opacity: 1 });
+    const barRect = bar.getBoundingClientRect();
+    const btnRect = targetBtn.getBoundingClientRect();
+    anime({
+      targets: bg,
+      left: btnRect.left - barRect.left,
+      width: btnRect.width,
+      duration: 400,
+      easing: "spring(1, 80, 12, 0)",
+    });
+    btns.forEach((b) => b.classList.remove("active"));
+    targetBtn.classList.add("active");
+  }
+
+  btns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      movePillTo(e.target);
+      currentFilter = e.target.dataset.cat;
+      handleSearch();
+    });
+  });
+
+  const activeBtn = bar.querySelector(".filter-btn.active");
+  if (activeBtn) movePillTo(activeBtn);
+}
+
+function initToggleGroups() {
+  const groups = document.querySelectorAll(".toggle-group");
+
+  groups.forEach((group) => {
+    const bg = group.querySelector(".toggle-pill-bg");
+    const btns = group.querySelectorAll(".toggle-btn");
+
+    function movePillTo(targetBtn) {
+      anime.set(bg, { opacity: 1 });
+      const groupRect = group.getBoundingClientRect();
+      const btnRect = targetBtn.getBoundingClientRect();
+      anime({
+        targets: bg,
+        left: btnRect.left - groupRect.left,
+        width: btnRect.width,
+        duration: 400,
+        easing: "spring(1, 80, 12, 0)",
+      });
+      btns.forEach((b) => b.classList.remove("active"));
+      targetBtn.classList.add("active");
+    }
+
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const val = btn.dataset.val;
+        if (group.id === "langGroup") {
+          const s = document.getElementById("langSwitcher");
+          if (s) {
+            s.value = val;
+            s.dispatchEvent(new Event("change"));
+          }
+        } else if (group.id === "themeGroup") {
+          const s = document.getElementById("themeSwitcher");
+          if (s) {
+            s.value = val;
+            s.dispatchEvent(new Event("change"));
+          }
+        }
+      });
+    });
+
+    // Initial Sync & Listeners
+    if (group.id === "langGroup") {
+      const sync = () => {
+        const cur = document.getElementById("langSwitcher")?.value || "zh-CN";
+        const t = group.querySelector(`[data-val="${cur}"]`);
+        if (t) movePillTo(t);
+      };
+      setTimeout(sync, 100);
+      document.addEventListener("languageChanged", (e) => {
+        const t = group.querySelector(`[data-val="${e.detail.lang}"]`);
+        if (t) movePillTo(t);
+      });
+    } else if (group.id === "themeGroup") {
+      const sync = () => {
+        const cur = document.getElementById("themeSwitcher")?.value || "auto";
+        const t = group.querySelector(`[data-val="${cur}"]`);
+        if (t) movePillTo(t);
+      };
+      setTimeout(sync, 100);
+      document.addEventListener("themeChanged", (e) => {
+        const t = group.querySelector(`[data-val="${e.detail.mode}"]`);
+        if (t) movePillTo(t);
+      });
+    }
+  });
+}
+
 function handleSearch() {
   const inputEl = document.getElementById("searchInput");
   const raw = inputEl ? inputEl.value : "";
@@ -564,14 +692,18 @@ function handleSearch() {
 
   const list = Array.isArray(items) ? items : [];
   const filteredItems = list.filter((item) => {
+    const matchesCat =
+      currentFilter === "all" || item.category === currentFilter;
+
     const name = String(item?.name ?? "").toLowerCase();
     const category = String(item?.category ?? "").toLowerCase();
     const notes = String(item?.notes ?? "").toLowerCase();
-    return (
+    const matchesSearch =
       name.includes(searchTerm) ||
       category.includes(searchTerm) ||
-      notes.includes(searchTerm)
-    );
+      notes.includes(searchTerm);
+
+    return matchesCat && matchesSearch;
   });
   renderItems(filteredItems);
 }
@@ -587,15 +719,21 @@ document.addEventListener("DOMContentLoaded", () => {
     animateStatsCounters();
 
     renderItems(items);
+    initFilters();
+    initToggleGroups();
   };
   if (Array.isArray(items) && items.length) initialRender();
   document.addEventListener("itemsLoaded", initialRender);
 
+  initBackgroundAnimation();
+  initButtonEffects();
+
   const runSearch = debounce(handleSearch, 300);
 
-  document
-    .getElementById("searchBtn")
-    .addEventListener("click", () => runSearch.flush());
+  const searchBtn = document.getElementById("searchBtn");
+  if (searchBtn) {
+    searchBtn.addEventListener("click", () => runSearch.flush());
+  }
 
   document.getElementById("searchInput").addEventListener("input", runSearch);
 
@@ -625,9 +763,63 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("languageChanged", () => {
     updateStatistics();
     renderItems(items);
-    updateRealTime();
   });
 
-  // i18n definitions removed from script.js.
-  // Use global currentLang() and t() provided by lang.js.
+  function initBackgroundAnimation() {
+    const bgContainer = document.getElementById("bgAnimation");
+    if (!bgContainer) return;
+
+    const numberOfShapes = 15;
+    const colors = ["#3498db", "#9b59b6", "#2ecc71", "#f1c40f"];
+
+    for (let i = 0; i < numberOfShapes; i++) {
+      const shape = document.createElement("div");
+      shape.classList.add("bg-shape");
+
+      const size = Math.random() * 100 + 50;
+      shape.style.width = `${size}px`;
+      shape.style.height = `${size}px`;
+      shape.style.left = `${Math.random() * 100}%`;
+      shape.style.top = `${Math.random() * 100}%`;
+      shape.style.background =
+        colors[Math.floor(Math.random() * colors.length)];
+
+      bgContainer.appendChild(shape);
+
+      anime({
+        targets: shape,
+        translateX: () => anime.random(-200, 200),
+        translateY: () => anime.random(-200, 200),
+        scale: () => anime.random(0.5, 1.5),
+        opacity: [0.05, 0.2],
+        duration: () => anime.random(10000, 20000),
+        delay: () => anime.random(0, 5000),
+        direction: "alternate",
+        loop: true,
+        easing: "easeInOutSine",
+      });
+    }
+  }
+
+  function initButtonEffects() {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (btn) {
+        anime({
+          targets: btn,
+          scale: [
+            { value: 0.9, duration: 100 },
+            { value: 1.1, duration: 100 },
+            { value: 1, duration: 100 },
+          ],
+          easing: "easeInOutQuad",
+        });
+      }
+    });
+  }
+  renderItems(items);
+  updateRealTime();
 });
+
+// i18n definitions removed from script.js.
+// Use global currentLang() and t() provided by lang.js.
