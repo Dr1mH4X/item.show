@@ -27,6 +27,9 @@
         <!-- Google tag (gtag.js) -->
     </head>
     <body>
+        <!-- Background Animation Container -->
+        <div id="bgAnimation" class="bg-animation"></div>
+
         <!-- Header Section -->
         <header id="mainHeader">
             <div class="logo">
@@ -34,20 +37,30 @@
                 <h1 id="appTitle">item.show</h1>
             </div>
             <div class="header-controls">
-                <!-- Language toggle pill -->
-                <button id="langToggle" class="pill-btn" data-lang="zh-CN">
-                    中文
-                </button>
-                <!-- Theme toggle pill -->
-                <button
-                    id="themeToggle"
-                    class="pill-btn"
-                    data-mode="auto"
-                    title="Auto / Light / Dark"
-                >
-                    Auto
-                </button>
-                <!-- Hidden legacy selects retained temporarily for script compatibility -->
+                <!-- Language Toggle Group -->
+                <div class="toggle-group" id="langGroup">
+                    <div class="toggle-pill-bg"></div>
+                    <button class="toggle-btn active" data-val="zh-CN">
+                        中文
+                    </button>
+                    <button class="toggle-btn" data-val="en">EN</button>
+                </div>
+
+                <!-- Theme Toggle Group -->
+                <div class="toggle-group" id="themeGroup">
+                    <div class="toggle-pill-bg"></div>
+                    <button class="toggle-btn active" data-val="auto">
+                        Auto
+                    </button>
+                    <button class="toggle-btn" data-val="light">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button class="toggle-btn" data-val="dark">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+
+                <!-- Hidden legacy selects retained for script compatibility -->
                 <div style="display: none">
                     <select id="langSwitcher">
                         <option value="zh-CN">中文</option>
@@ -117,18 +130,24 @@
                         <h2 id="itemsListTitle">
                             <i class="fas fa-list"></i> 物品资产清单
                         </h2>
-                        <div class="search-box">
-                            <input
-                                type="text"
-                                id="searchInput"
-                                placeholder="搜索物品名称、类别或备注..."
-                                data-i18n-placeholder="searchPlaceholder"
-                            />
-                            <button id="searchBtn">
-                                <i class="fas fa-search"></i>
-                                <span id="searchBtnText">搜索</span>
-                            </button>
-                        </div>
+                    </div>
+
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="搜索物品 / Search items..."
+                            data-i18n-placeholder="searchPlaceholder"
+                        />
+                    </div>
+
+                    <div class="filter-bar" id="categoryFilter">
+                        <div class="filter-pill-bg"></div>
+                        <button class="filter-btn active" data-cat="all">
+                            全部
+                        </button>
+                        <!-- JS will populate categories here -->
                     </div>
 
                     <div class="items-grid" id="itemsContainer">
