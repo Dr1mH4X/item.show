@@ -1,0 +1,132 @@
+const itemsData = [
+  {
+    "id": 1,
+    "name": "📱Samsung GALAXY Note II",
+    "purchaseDate": "2014-10-15",
+    "price": 2660,
+    "retirementDate": "2016-03-15",
+    "warrantyDate": "2015-10-15",
+    "notes": "First phone",
+    "category": "电子设备"
+  },
+  {
+    "id": 2,
+    "name": "📱Redmi K30",
+    "purchaseDate": "2020-10-17",
+    "price": 1999,
+    "retirementDate": "2023-04-27",
+    "warrantyDate": "2021-10-17",
+    "notes": "BL->💥Motherboard",
+    "category": "电子设备"
+  },
+  {
+    "id": 3,
+    "name": "💻ROG Strix G15(G512)",
+    "purchaseDate": "2020-11-05",
+    "price": 8999,
+    "retirementDate": "2024-05-18",
+    "warrantyDate": "2021-11-05",
+    "notes": "Sold it for 2700￥",
+    "category": "电子设备"
+  },
+  {
+    "id": 4,
+    "name": "🎧SONY WH-CH710N",
+    "purchaseDate": "2022-03-29",
+    "price": 557,
+    "retirementDate": null,
+    "warrantyDate": "2023-03-29",
+    "notes": "Unused",
+    "category": "电子设备"
+  },
+  {
+    "id": 5,
+    "name": "🎧Redmi Buds4",
+    "purchaseDate": "2023-03-07",
+    "price": 129,
+    "retirementDate": "2024-06-19",
+    "warrantyDate": "2024-03-07",
+    "notes": "Lost",
+    "category": "电子设备"
+  },
+  {
+    "id": 6,
+    "name": "🖱️Logitech PRO X SUPERLIGHT",
+    "purchaseDate": "2023-04-22",
+    "price": 707,
+    "retirementDate": null,
+    "warrantyDate": "2026-01-26",
+    "notes": "CS:GO Cases->🖱",
+    "category": "电子设备"
+  },
+  {
+    "id": 7,
+    "name": "📱Redmi K50",
+    "purchaseDate": "2023-04-28",
+    "price": 2399,
+    "retirementDate": "2024-11-24",
+    "warrantyDate": "2024-04-28",
+    "notes": "Can't bear HyperOS , sold for 640￥",
+    "category": "电子设备"
+  },
+  {
+    "id": 8,
+    "name": "💻Lenovo ThinkPad X280",
+    "purchaseDate": "2024-05-07",
+    "price": 1146,
+    "retirementDate": null,
+    "warrantyDate": "2025-05-07",
+    "notes": "Used",
+    "category": "电子设备"
+  },
+  {
+    "id": 9,
+    "name": "📱Apple iPhone 15Pro",
+    "purchaseDate": "2024-11-23",
+    "price": 7499,
+    "retirementDate": null,
+    "warrantyDate": "2025-11-23",
+    "notes": "Expencive😭",
+    "category": "电子设备"
+  },
+  {
+    "id": 10,
+    "name": "🎧Apple AirPods 4 ANC",
+    "purchaseDate": "2025-05-08",
+    "price": 1061,
+    "retirementDate": null,
+    "warrantyDate": "2027-06-04",
+    "notes": "p😭q",
+    "category": "电子设备"
+  },
+  {
+    "id": 11,
+    "name": "🗂️UGREEN DXP4800 Plus",
+    "purchaseDate": "2025-05-27",
+    "price": 2350,
+    "retirementDate": null,
+    "warrantyDate": "2026-05-29",
+    "notes": "UGOSPro is really nice",
+    "category": "电子设备"
+  },
+  {
+    "id": 12,
+    "name": "🔋CUKTECH 10Mini",
+    "purchaseDate": "2025-11-13",
+    "price": 156,
+    "retirementDate": null,
+    "warrantyDate": "2026-11-13",
+    "notes": "Compact and portable",
+    "category": "电子设备"
+  },
+  {
+    "id": 13,
+    "name": "🔌UGREEN USBHUB",
+    "purchaseDate": "2025-12-11",
+    "price": 111,
+    "retirementDate": null,
+    "warrantyDate": "2026-12-11",
+    "notes": "USB3.2x2+USB-C3.2x2(PD100W)+2.5GbE Port+HDMI(4K60Hz)",
+    "category": "电子设备"
+  }
+];
