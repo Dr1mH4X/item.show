@@ -40,23 +40,14 @@ function parseDateFlexible(input) {
 /**
  * Load items from external JSON and refresh UI.
  */
-async function loadItems() {
-  try {
-    const res = await fetch("items.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      items = data;
-    } else if (data && Array.isArray(data.items)) {
-      items = data.items;
-    } else {
-      items = [];
-      console.warn("items.json format not recognized");
-    }
-  } catch (err) {
-    console.error("Failed to load items.json:", err);
+function initApp() {
+  if (typeof itemsData !== "undefined") {
+    items = itemsData;
+  } else {
     items = [];
+    console.warn("itemsData is not defined");
   }
+
   // Refresh UI if functions are ready
   if (typeof updateStatistics === "function") updateStatistics();
   if (typeof animateStatsCounters === "function") animateStatsCounters();
@@ -68,9 +59,9 @@ async function loadItems() {
 
 // Kick off loading ASAP
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => loadItems());
+  document.addEventListener("DOMContentLoaded", initApp);
 } else {
-  loadItems();
+  initApp();
 }
 
 window.getItems = () => items;
@@ -288,12 +279,7 @@ function renderItems(itemsToRender) {
 
         </div>`;
 
-      animejs.animate({
-        targets: ".empty-state",
-        opacity: [0, 1],
-        duration: 400,
-        easing: "easeOutQuad",
-      });
+      AppAnimations.fadeInEmptyState(".empty-state");
 
       return;
     }
@@ -440,24 +426,11 @@ function renderItems(itemsToRender) {
     });
 
     // Staggered slide-in animation for item cards
-    animejs.animate({
-      targets: ".item-card",
-      translateY: [50, 0],
-      opacity: [0, 1],
-      delay: animejs.stagger(100, { start: 100 }),
-      easing: "spring(1, 80, 10, 0)",
-    });
+    AppAnimations.animateItemCardsEntry(".item-card");
   };
 
   if (oldItems.length > 0) {
-    animejs.animate({
-      targets: oldItems,
-      opacity: 0,
-      scale: 0.95,
-      duration: 200,
-      easing: "easeInQuad",
-      complete: performRender,
-    });
+    AppAnimations.animateOldItemsExit(oldItems, performRender);
   } else {
     performRender();
   }
@@ -509,54 +482,11 @@ function updateStatistics() {
  * Animates the main statistics counters (Total Value, Total Items, Average Daily Cost).
  */
 function animateStatsCounters() {
-  const totalValueElement = document.getElementById("totalValue");
-  const totalItemsElement = document.getElementById("totalItems");
-  const avgDailyCostElement = document.getElementById("avgDailyCost");
-
-  // Reset text content to 0 before animation to ensure consistent animation start
-  totalValueElement.textContent = "¥0";
-  totalItemsElement.textContent = "0";
-  avgDailyCostElement.textContent = "¥0.00";
-
-  // Animate total value
-  animejs.animate({
-    targets: { num: 0 },
-    num: globalTotalValue,
-    easing: "spring(1, 80, 10, 0)",
-    update: (anim) => {
-      totalValueElement.textContent = `¥${Math.round(anim.animatables[0].target.num).toLocaleString()}`;
-    },
-    complete: () => {
-      totalValueElement.textContent = `¥${globalTotalValue.toLocaleString()}`;
-    },
-  });
-
-  // Animate total items
-  animejs.animate({
-    targets: { num: 0 },
-    num: globalTotalItems,
-    easing: "spring(1, 80, 10, 0)",
-    round: 1,
-    update: (anim) => {
-      totalItemsElement.textContent = anim.animatables[0].target.num;
-    },
-    complete: () => {
-      totalItemsElement.textContent = globalTotalItems;
-    },
-  });
-
-  // Animate average daily cost
-  animejs.animate({
-    targets: { num: 0 },
-    num: globalAvgDailyCost,
-    easing: "spring(1, 80, 10, 0)",
-    update: (anim) => {
-      avgDailyCostElement.textContent = `¥${anim.animatables[0].target.num.toFixed(2)}`;
-    },
-    complete: () => {
-      avgDailyCostElement.textContent = `¥${globalAvgDailyCost.toFixed(2)}`;
-    },
-  });
+  AppAnimations.animateDashboardStats(
+    globalTotalValue,
+    globalTotalItems,
+    globalAvgDailyCost,
+  );
 }
 
 /**
@@ -589,24 +519,17 @@ function initFilters() {
   const btns = bar.querySelectorAll(".filter-btn");
 
   function movePillTo(targetBtn) {
-    animejs.set(bg, { opacity: 1 });
-    const barRect = bar.getBoundingClientRect();
-    const btnRect = targetBtn.getBoundingClientRect();
-    animejs.animate({
-      targets: bg,
-      left: btnRect.left - barRect.left,
-      width: btnRect.width,
-      duration: 400,
-      easing: "spring(1, 80, 12, 0)",
-    });
+    AppAnimations.animatePillMove(bg, targetBtn, bar);
     btns.forEach((b) => b.classList.remove("active"));
     targetBtn.classList.add("active");
   }
 
   btns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      movePillTo(e.target);
-      currentFilter = e.target.dataset.cat;
+      const target = e.target.closest(".filter-btn");
+      if (!target) return;
+      movePillTo(target);
+      currentFilter = target.dataset.cat;
       handleSearch();
     });
   });
@@ -623,22 +546,14 @@ function initToggleGroups() {
     const btns = group.querySelectorAll(".toggle-btn");
 
     function movePillTo(targetBtn) {
-      animejs.set(bg, { opacity: 1 });
-      const groupRect = group.getBoundingClientRect();
-      const btnRect = targetBtn.getBoundingClientRect();
-      animejs.animate({
-        targets: bg,
-        left: btnRect.left - groupRect.left,
-        width: btnRect.width,
-        duration: 400,
-        easing: "spring(1, 80, 12, 0)",
-      });
+      AppAnimations.animatePillMove(bg, targetBtn, group);
       btns.forEach((b) => b.classList.remove("active"));
       targetBtn.classList.add("active");
     }
 
     btns.forEach((btn) => {
       btn.addEventListener("click", () => {
+        movePillTo(btn);
         const val = btn.dataset.val;
         if (group.id === "langGroup") {
           const s = document.getElementById("langSwitcher");
@@ -766,56 +681,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function initBackgroundAnimation() {
-    const bgContainer = document.getElementById("bgAnimation");
-    if (!bgContainer) return;
-
-    const numberOfShapes = 15;
-    const colors = ["#3498db", "#9b59b6", "#2ecc71", "#f1c40f"];
-
-    for (let i = 0; i < numberOfShapes; i++) {
-      const shape = document.createElement("div");
-      shape.classList.add("bg-shape");
-
-      const size = Math.random() * 100 + 50;
-      shape.style.width = `${size}px`;
-      shape.style.height = `${size}px`;
-      shape.style.left = `${Math.random() * 100}%`;
-      shape.style.top = `${Math.random() * 100}%`;
-      shape.style.background =
-        colors[Math.floor(Math.random() * colors.length)];
-
-      bgContainer.appendChild(shape);
-
-      animejs.animate({
-        targets: shape,
-        translateX: () => animejs.random(-200, 200),
-        translateY: () => animejs.random(-200, 200),
-        scale: () => animejs.random(0.5, 1.5),
-        opacity: [0.05, 0.2],
-        duration: () => animejs.random(10000, 20000),
-        delay: () => animejs.random(0, 5000),
-        direction: "alternate",
-        loop: true,
-        easing: "easeInOutSine",
-      });
-    }
+    AppAnimations.initBackground("bgAnimation");
   }
 
   function initButtonEffects() {
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (btn) {
-        animejs.animate({
-          targets: btn,
-          scale: [
-            { value: 0.9, duration: 100 },
-            { value: 1.1, duration: 100 },
-            { value: 1, duration: 100 },
-          ],
-          easing: "easeInOutQuad",
-        });
-      }
-    });
+    AppAnimations.initButtonEffects();
   }
   renderItems(items);
   updateRealTime();
