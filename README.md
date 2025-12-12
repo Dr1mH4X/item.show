@@ -6,18 +6,8 @@
 
 
 
-一个轻量的静态托管仪表盘，用于浏览你的个人物品及其生命周期成本。数据外置在 `items.json`。
+一个轻量的静态托管仪表盘，用于浏览你的个人物品及其生命周期成本。
 
-
-## 目录结构
-
-- `index.html` — 应用骨架与布局
-- `styles.css` — 设计变量、布局、深/浅主题适配
-- `lang.js` — 语言切换（zh-CN/en），与胶囊按钮联动
-- `theme.js` — 主题切换（auto/light/dark）与持久化
-- `script.js` — 数据加载、渲染、统计、搜索、动画
-- `items.json` — 你的数据文件（自行维护）
-- `CNAME` — 自定义域名（若使用 GitHub Pages）
 
 
 ## items.json 数据结构

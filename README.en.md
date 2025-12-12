@@ -4,15 +4,6 @@
 
 A lightweight static dashboard to browse your personal items and their lifecycle cost. Data is externalized in `items.json`.
 
-## Directory structure
-
-- `index.html` — app shell and layout
-- `styles.css` — design tokens, layout, dark/light adaptations
-- `lang.js` — i18n management (zh-CN/en), pill-toggle glue
-- `theme.js` — theme switching (auto/light/dark) + persistence
-- `script.js` — data loading, rendering, stats, search, animations
-- `items.json` — your items data (you own this file)
-- `CNAME` — optional custom domain (if using GitHub Pages)
 
 
 ## items.json schema
