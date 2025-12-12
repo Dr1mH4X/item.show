@@ -288,7 +288,7 @@ function renderItems(itemsToRender) {
 
         </div>`;
 
-      anime({
+      animejs.animate({
         targets: ".empty-state",
         opacity: [0, 1],
         duration: 400,
@@ -440,17 +440,17 @@ function renderItems(itemsToRender) {
     });
 
     // Staggered slide-in animation for item cards
-    anime({
+    animejs.animate({
       targets: ".item-card",
       translateY: [50, 0],
       opacity: [0, 1],
-      delay: anime.stagger(100, { start: 100 }),
+      delay: animejs.stagger(100, { start: 100 }),
       easing: "spring(1, 80, 10, 0)",
     });
   };
 
   if (oldItems.length > 0) {
-    anime({
+    animejs.animate({
       targets: oldItems,
       opacity: 0,
       scale: 0.95,
@@ -519,7 +519,7 @@ function animateStatsCounters() {
   avgDailyCostElement.textContent = "¥0.00";
 
   // Animate total value
-  anime({
+  animejs.animate({
     targets: { num: 0 },
     num: globalTotalValue,
     easing: "spring(1, 80, 10, 0)",
@@ -532,7 +532,7 @@ function animateStatsCounters() {
   });
 
   // Animate total items
-  anime({
+  animejs.animate({
     targets: { num: 0 },
     num: globalTotalItems,
     easing: "spring(1, 80, 10, 0)",
@@ -546,7 +546,7 @@ function animateStatsCounters() {
   });
 
   // Animate average daily cost
-  anime({
+  animejs.animate({
     targets: { num: 0 },
     num: globalAvgDailyCost,
     easing: "spring(1, 80, 10, 0)",
@@ -589,10 +589,10 @@ function initFilters() {
   const btns = bar.querySelectorAll(".filter-btn");
 
   function movePillTo(targetBtn) {
-    anime.set(bg, { opacity: 1 });
+    animejs.set(bg, { opacity: 1 });
     const barRect = bar.getBoundingClientRect();
     const btnRect = targetBtn.getBoundingClientRect();
-    anime({
+    animejs.animate({
       targets: bg,
       left: btnRect.left - barRect.left,
       width: btnRect.width,
@@ -623,10 +623,10 @@ function initToggleGroups() {
     const btns = group.querySelectorAll(".toggle-btn");
 
     function movePillTo(targetBtn) {
-      anime.set(bg, { opacity: 1 });
+      animejs.set(bg, { opacity: 1 });
       const groupRect = group.getBoundingClientRect();
       const btnRect = targetBtn.getBoundingClientRect();
-      anime({
+      animejs.animate({
         targets: bg,
         left: btnRect.left - groupRect.left,
         width: btnRect.width,
@@ -786,14 +786,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       bgContainer.appendChild(shape);
 
-      anime({
+      animejs.animate({
         targets: shape,
-        translateX: () => anime.random(-200, 200),
-        translateY: () => anime.random(-200, 200),
-        scale: () => anime.random(0.5, 1.5),
+        translateX: () => animejs.random(-200, 200),
+        translateY: () => animejs.random(-200, 200),
+        scale: () => animejs.random(0.5, 1.5),
         opacity: [0.05, 0.2],
-        duration: () => anime.random(10000, 20000),
-        delay: () => anime.random(0, 5000),
+        duration: () => animejs.random(10000, 20000),
+        delay: () => animejs.random(0, 5000),
         direction: "alternate",
         loop: true,
         easing: "easeInOutSine",
@@ -805,7 +805,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("button");
       if (btn) {
-        anime({
+        animejs.animate({
           targets: btn,
           scale: [
             { value: 0.9, duration: 100 },
