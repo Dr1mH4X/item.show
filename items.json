@@ -118,5 +118,15 @@
     "warrantyDate": "2026-11-13",
     "notes": "没用过，试一下",
     "category": "电子设备"
+  },
+  {
+    "id": 13,
+    "name": "🔌UGREEN USBHUB",
+    "purchaseDate": "2025-12-11",
+    "price": 111,
+    "retirementDate": null,
+    "warrantyDate": "2026-12-11",
+    "notes": "USB3.2x2+USB-C3.2x2(PD100W)+2.5GbE Port+HDMI(4K60Hz)",
+    "category": "电子设备"
   }
 ]
