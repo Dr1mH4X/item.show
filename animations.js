@@ -95,7 +95,12 @@ const AppAnimations = {
     if (!bgContainer) return;
 
     const numberOfShapes = 15;
-    const colors = ["#3498db", "#9b59b6", "#2ecc71", "#f1c40f"];
+    const colors = [
+      "var(--primary)",
+      "var(--secondary)",
+      "var(--success)",
+      "var(--warning)",
+    ];
 
     for (let i = 0; i < numberOfShapes; i++) {
       const shape = document.createElement("div");
@@ -115,7 +120,7 @@ const AppAnimations = {
         translateX: () => anime.random(-200, 200),
         translateY: () => anime.random(-200, 200),
         scale: () => anime.random(0.5, 1.5),
-        opacity: [0.05, 0.2],
+        opacity: [0.1, 0.3],
         duration: () => anime.random(10000, 20000),
         delay: () => anime.random(0, 5000),
         direction: "alternate",
