@@ -179,6 +179,7 @@ function calculateDailyCost(item) {
   }
 
   let dailyCost;
+  let originalDailyCost = null;
   let totalDaysForDisplay;
   let consumedValue;
 
@@ -196,14 +197,26 @@ function calculateDailyCost(item) {
       (retirementDate.getTime() - purchaseDate.getTime()) / (1000 * 3600 * 24),
     );
 
+    // Calculate net cost if sold
+    let netCost = item.price;
+    if (item.soldPrice) {
+      netCost = item.price - item.soldPrice;
+    }
+
     if (totalDaysLifeSpan <= 0) {
       dailyCost = "0.00";
-      consumedValue = item.price.toFixed(2);
+      if (item.soldPrice) {
+        originalDailyCost = "0.00";
+      }
+      consumedValue = netCost.toFixed(2);
       totalDaysForDisplay = totalDaysLifeSpan;
     } else {
-      dailyCost = (item.price / totalDaysLifeSpan).toFixed(2);
+      dailyCost = (netCost / totalDaysLifeSpan).toFixed(2);
+      if (item.soldPrice) {
+        originalDailyCost = (item.price / totalDaysLifeSpan).toFixed(2);
+      }
       consumedValue = Math.min(
-        item.price,
+        netCost,
         parseFloat(dailyCost) * daysUsed,
       ).toFixed(2);
       totalDaysForDisplay = totalDaysLifeSpan;
@@ -212,6 +225,7 @@ function calculateDailyCost(item) {
 
   return {
     dailyCost,
+    originalDailyCost,
     totalDays: totalDaysForDisplay,
     daysUsed,
     consumedValue,
@@ -314,10 +328,19 @@ function renderItems(itemsToRender) {
         // Fill fields
         setText('[data-field="name"]', item.name);
         const priceEl = node.querySelector('[data-field="price"]');
-        if (priceEl) priceEl.textContent = item.price.toLocaleString();
-        node.querySelectorAll('[data-field="currency"]').forEach((c) => {
-          c.textContent = "¥";
-        });
+        const priceContainer = node.querySelector(".price");
+
+        if (item.soldPrice && priceContainer) {
+          const netCost = item.price - item.soldPrice;
+          priceContainer.innerHTML = `<s style="opacity: 0.6; margin-right: 4px;">¥${item.price.toLocaleString()}</s> ¥${netCost.toLocaleString()}`;
+        } else {
+          if (priceEl) {
+            priceEl.textContent = item.price.toLocaleString();
+          }
+          node.querySelectorAll('[data-field="currency"]').forEach((c) => {
+            c.textContent = "¥";
+          });
+        }
 
         const statusEl = node.querySelector('[data-field="statusText"]');
         if (statusEl) {
@@ -340,7 +363,17 @@ function renderItems(itemsToRender) {
 
         const daysUsedDisplay = `${cost.daysUsed} ${dict ? dict.dayWord : "天"}`;
 
-        setText('[data-field="dailyCost"]', cost.dailyCost);
+        const dailyCostEl = node.querySelector('[data-field="dailyCost"]');
+        if (dailyCostEl) {
+          if (cost.originalDailyCost) {
+            const parent = dailyCostEl.parentElement;
+            if (parent) {
+              parent.innerHTML = `<s style="opacity: 0.6; margin-right: 4px;">¥${cost.originalDailyCost}</s> ¥${cost.dailyCost}`;
+            }
+          } else {
+            dailyCostEl.textContent = cost.dailyCost;
+          }
+        }
 
         setText('[data-field="daysUsed"]', daysUsedDisplay);
 
@@ -365,7 +398,13 @@ function renderItems(itemsToRender) {
 
                     <h3>${item.name}</h3>
 
-                    <div class="price">¥${item.price.toLocaleString()}</div>
+                    <div class="price">${
+                      item.soldPrice
+                        ? `<s style="opacity: 0.6; margin-right: 4px;">¥${item.price.toLocaleString()}</s> ¥${(
+                            item.price - item.soldPrice
+                          ).toLocaleString()}`
+                        : "¥" + item.price.toLocaleString()
+                    }</div>
 
                     <span class="status-tag ${status.class}">${status.text}</span>
 
@@ -405,7 +444,11 @@ function renderItems(itemsToRender) {
 
                             <span class="detail-label">${dict ? dict.dailyCost : "日均成本"}</span>
 
-                            <span class="detail-value">¥${cost.dailyCost}</span>
+                            <span class="detail-value">${
+                              cost.originalDailyCost
+                                ? `<s style="opacity: 0.6; margin-right: 4px;">¥${cost.originalDailyCost}</s> ¥${cost.dailyCost}`
+                                : "¥" + cost.dailyCost
+                            }</span>
 
                         </div>
 
@@ -445,7 +488,11 @@ function updateStatistics() {
   let totalDailyCost = 0;
 
   items.forEach((item) => {
-    totalValue += item.price;
+    if (item.soldPrice) {
+      totalValue += item.price - item.soldPrice;
+    } else {
+      totalValue += item.price;
+    }
     const cost = calculateDailyCost(item);
     totalDailyCost += parseFloat(cost.dailyCost);
   });
