@@ -1,13 +1,13 @@
 const itemsData = [
   {
-    id: 1,
-    name: "📱Samsung GALAXY Note II",
-    purchaseDate: "2014-10-15",
-    price: 2660,
-    retirementDate: "2016-03-15",
-    warrantyDate: "2015-10-15",
-    notes: "First phone",
-    category: "电子设备",
+    id: 1, // 唯一id
+    name: "📱Samsung GALAXY Note II", // 显示的名字
+    purchaseDate: "2014-10-15", // 购买日期
+    price: 2660, // 购买价格
+    retirementDate: "2016-03-15", // 退役日期
+    warrantyDate: "2015-10-15", // 保修日期
+    notes: "First phone", // 备注
+    category: "电子设备", // 分类
   },
   {
     id: 2,
@@ -43,6 +43,16 @@ const itemsData = [
   },
   {
     id: 5,
+    name: "🎧Xiaomi Band 7 NFC",
+    purchaseDate: "2023-01-22",
+    price: 249,
+    retirementDate: null,
+    warrantyDate: "2024-01-22",
+    notes: "Useful",
+    category: "电子设备",
+  },
+  {
+    id: 6,
     name: "🎧Redmi Buds4",
     purchaseDate: "2023-03-07",
     price: 129,
@@ -52,7 +62,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 6,
+    id: 7,
     name: "🖱️Logitech PRO X SUPERLIGHT",
     purchaseDate: "2023-04-22",
     price: 707,
@@ -62,7 +72,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 7,
+    id: 8,
     name: "📱Redmi K50",
     purchaseDate: "2023-04-28",
     price: 2399,
@@ -73,7 +83,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 8,
+    id: 9,
     name: "💻Lenovo ThinkPad X280",
     purchaseDate: "2024-05-07",
     price: 1146,
@@ -83,7 +93,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 9,
+    id: 10,
     name: "📱Apple iPhone 15Pro",
     purchaseDate: "2024-11-23",
     price: 7499,
@@ -93,7 +103,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 10,
+    id: 11,
     name: "🎧Apple AirPods 4 ANC",
     purchaseDate: "2025-05-08",
     price: 1061,
@@ -103,7 +113,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 11,
+    id: 12,
     name: "🗂️UGREEN DXP4800 Plus",
     purchaseDate: "2025-05-27",
     price: 2350,
@@ -113,7 +123,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 12,
+    id: 13,
     name: "🔋CUKTECH 10Mini",
     purchaseDate: "2025-11-13",
     price: 156,
@@ -123,7 +133,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 13,
+    id: 14,
     name: "🔌UGREEN USBHUB",
     purchaseDate: "2025-12-11",
     price: 111,
@@ -133,7 +143,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 14,
+    id: 15,
     name: "💻Apple MacBook Air M2",
     purchaseDate: "2025-12-17",
     price: 5804,
