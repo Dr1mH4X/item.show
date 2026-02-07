@@ -43,7 +43,7 @@ const itemsData = [
   },
   {
     id: 5,
-    name: "🎧Xiaomi Band 7 NFC",
+    name: "⌚Xiaomi Band 7 NFC",
     purchaseDate: "2023-01-22",
     price: 249,
     retirementDate: null,
