@@ -1,10 +1,6 @@
 /**
  * Theme switching module (auto / light / dark) with persistence.
  *
- * Usage:
- *  - <select id="themeSwitcher"> values: auto | light | dark
- *  - CSS uses :root[data-theme="dark"] for dark mode tokens.
- *
  * Persistence key: localStorage 'appTheme'
  * Custom event dispatched: 'themeChanged'  (detail: { mode, effective })
  *
