@@ -88,6 +88,7 @@ let globalTotalValue = 0;
 let globalTotalItems = 0;
 let globalAvgDailyCost = 0;
 let currentFilter = "all";
+let currentCalcMode = 0; // 0=All Purchase, 1=Active Purchase, 2=Net Value
 
 /**
  * Updates the current date and time displayed in the banner.
@@ -240,11 +241,23 @@ function calculateDailyCost(item) {
 
 function getItemStatus(item) {
   const today = new Date();
-
-  const warrantyDate = parseDateFlexible(item.warrantyDate);
-
   const dict = typeof t === "function" ? t() : null;
 
+  // 1. Check Retirement (Highest Priority)
+  const parsedRetirementDate = parseDateFlexible(item.retirementDate);
+  const isRetired = !(
+    item.retirementDate === null ||
+    item.retirementDate === 0 ||
+    item.retirementDate === "0" ||
+    !parsedRetirementDate
+  );
+
+  if (isRetired && parsedRetirementDate <= today) {
+    return { text: dict ? dict.statusRetired : "已退役", class: "retired-tag" };
+  }
+
+  // 2. Check Warranty
+  const warrantyDate = parseDateFlexible(item.warrantyDate);
   if (!warrantyDate) {
     return { text: dict ? dict.statusActive : "使用中", class: "active-tag" };
   }
@@ -488,11 +501,29 @@ function updateStatistics() {
   let totalDailyCost = 0;
 
   items.forEach((item) => {
-    if (item.soldPrice) {
-      totalValue += item.price - item.soldPrice;
+    // Check retirement
+    const parsedRetirementDate = parseDateFlexible(item.retirementDate);
+    const isRetired = !(
+      item.retirementDate === null ||
+      item.retirementDate === 0 ||
+      item.retirementDate === "0" ||
+      !parsedRetirementDate
+    );
+
+    if (currentCalcMode === 1 && isRetired) {
+      return;
+    }
+
+    if (currentCalcMode === 2) {
+      if (item.soldPrice) {
+        totalValue += item.price - item.soldPrice;
+      } else {
+        totalValue += item.price;
+      }
     } else {
       totalValue += item.price;
     }
+
     const cost = calculateDailyCost(item);
     totalDailyCost += parseFloat(cost.dailyCost);
   });
@@ -507,6 +538,27 @@ function updateStatistics() {
   const updatedLabel = dict ? dict.systemDataUpdated : "系统数据更新时间：";
   const itemsLabel = dict ? dict.currentItemsCount : "当前物品总数：";
   const valueLabel = dict ? dict.totalValueFooter : "总价值：";
+
+  // Update Main Total Value Label based on mode
+  const mainValueLabelEl = document.getElementById("totalValueLabel");
+  if (mainValueLabelEl) {
+    if (currentCalcMode === 0) {
+      mainValueLabelEl.textContent =
+        dict && dict.totalValueLabelAll
+          ? dict.totalValueLabelAll
+          : "总资产价值 (全部购入)";
+    } else if (currentCalcMode === 1) {
+      mainValueLabelEl.textContent =
+        dict && dict.totalValueLabelActive
+          ? dict.totalValueLabelActive
+          : "总资产价值 (未退役)";
+    } else {
+      mainValueLabelEl.textContent =
+        dict && dict.totalValueLabelNet
+          ? dict.totalValueLabelNet
+          : "总资产价值 (净值)";
+    }
+  }
 
   const now = new Date();
   const locale =
@@ -695,6 +747,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("searchBtn");
   if (searchBtn) {
     searchBtn.addEventListener("click", () => runSearch.flush());
+  }
+
+  const toggleCalcBtn = document.getElementById("toggleCalcModeBtn");
+  if (toggleCalcBtn) {
+    toggleCalcBtn.addEventListener("click", () => {
+      // Cycle: 0 -> 1 -> 2 -> 0
+      currentCalcMode = (currentCalcMode + 1) % 3;
+      updateStatistics();
+      animateStatsCounters();
+    });
   }
 
   document.getElementById("searchInput").addEventListener("input", runSearch);
