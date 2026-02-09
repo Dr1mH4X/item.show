@@ -14,7 +14,11 @@
     "zh-CN": {
       // Static UI labels
 
-      totalValueLabel: "总资产价值",
+      totalValueLabel: "总资产",
+
+      totalValueLabelAll: "总资产 (总值)",
+      totalValueLabelActive: "总资产 (未退役)",
+      totalValueLabelNet: "总资产 (净值)",
 
       totalItemsLabel: "物品总数",
 
@@ -50,6 +54,8 @@
 
       emptyText: "请尝试不同的搜索词或清除搜索条件。",
 
+      statusRetired: "已退役",
+
       statusExpired: "已过保",
 
       statusExpiring: (d) => `保修即将到期 (${d}天)`,
@@ -80,6 +86,10 @@
       // Static UI labels
 
       totalValueLabel: "Total Asset Value",
+
+      totalValueLabelAll: "Total Asset Value (All)",
+      totalValueLabelActive: "Total Asset Value (Active)",
+      totalValueLabelNet: "Total Asset Value (Net)",
 
       totalItemsLabel: "Total Items",
 
@@ -114,6 +124,8 @@
       emptyTitle: "No items found",
 
       emptyText: "Try different keywords or clear search filters.",
+
+      statusRetired: "Retired",
 
       statusExpired: "Expired",
 
