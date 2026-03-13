@@ -4,7 +4,7 @@ const itemsData = [
     name: "📱Samsung GALAXY Note II", // 显示的名字
     purchaseDate: "2014-10-15", // 购买日期
     price: 3660, // 购买价格
-    retirementDate: "2016-03-15", // 退役日期
+    retirementDate: "2016-05-18", // 退役日期
     warrantyDate: "2015-10-15", // 保修日期
     notes: "First phone", // 备注
     category: "电子设备", // 分类
