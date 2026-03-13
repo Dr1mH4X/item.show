@@ -43,6 +43,28 @@ const itemsData = [
   },
   {
     id: 5,
+    name: "⌨️FLesport F12",
+    purchaseDate: "2021-09-13",
+    price: 399,
+    retirementDate: "2023-11-13",
+    warrantyDate: "2022-09-13",
+    soldPrice: 100,
+    notes: "sell to classmate",
+    category: "电子设备",
+  },
+  {
+    id: 6,
+    name: "🖱️Ironcat Minipro",
+    purchaseDate: "2022-02-01",
+    price: 333,
+    retirementDate: "2023-04-20",
+    warrantyDate: "2023-02-01",
+    soldPrice: 100,
+    notes: "sell to classmate",
+    category: "电子设备",
+  },
+  {
+    id: 7,
     name: "🎧SONY WH-CH710N",
     purchaseDate: "2022-03-29",
     price: 557,
@@ -52,7 +74,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 6,
+    id: 8,
     name: "⌚Xiaomi Band 7 NFC",
     purchaseDate: "2023-01-22",
     price: 249,
@@ -62,7 +84,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 7,
+    id: 9,
     name: "🎧Redmi Buds4",
     purchaseDate: "2023-03-07",
     price: 129,
@@ -72,7 +94,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 8,
+    id: 10,
     name: "🖱️Logitech PRO X SUPERLIGHT",
     purchaseDate: "2023-04-22",
     price: 707,
@@ -82,18 +104,18 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 9,
+    id: 11,
     name: "📱Redmi K50",
     purchaseDate: "2023-04-28",
     price: 2399,
     retirementDate: "2024-11-24",
     warrantyDate: "2024-04-28",
     soldPrice: 640,
-    notes: "Can't bear HyperOS , sold for 640￥",
+    notes: "BL-unlocked,but still freeze sometime",
     category: "电子设备",
   },
   {
-    id: 10,
+    id: 12,
     name: "💻Lenovo ThinkPad X280",
     purchaseDate: "2024-05-07",
     price: 1146,
@@ -104,7 +126,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 11,
+    id: 13,
     name: "🖥️AMD Ryzen5 5600",
     purchaseDate: "2024-05-18",
     price: 610,
@@ -115,7 +137,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 12,
+    id: 14,
     name: "🖥️ASUS RTX 3060 Ti",
     purchaseDate: "2024-05-18",
     price: 2080,
@@ -126,7 +148,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 13,
+    id: 15,
     name: "📱Apple iPhone 15 Pro",
     purchaseDate: "2024-11-23",
     price: 7499,
@@ -136,7 +158,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 14,
+    id: 16,
     name: "🎧Apple AirPods 4 ANC",
     purchaseDate: "2025-05-08",
     price: 1061,
@@ -146,7 +168,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 15,
+    id: 17,
     name: "🗂️UGREEN DXP4800 Plus",
     purchaseDate: "2025-05-27",
     price: 2350,
@@ -156,7 +178,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 16,
+    id: 18,
     name: "🖥️GUNNIR Arc A580",
     purchaseDate: "2025-09-08",
     price: 830,
@@ -167,7 +189,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 17,
+    id: 19,
     name: "🖥️AMD Ryzen5 5600X",
     purchaseDate: "2025-09-08",
     price: 568,
@@ -178,7 +200,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 18,
+    id: 20,
     name: "🔋CUKTECH 10Mini",
     purchaseDate: "2025-11-13",
     price: 156,
@@ -188,7 +210,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 19,
+    id: 21,
     name: "🔌UGREEN USBHUB",
     purchaseDate: "2025-12-11",
     price: 111,
@@ -198,7 +220,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 20,
+    id: 22,
     name: "💻Apple MacBook Air M2",
     purchaseDate: "2025-12-17",
     price: 5804,
@@ -208,7 +230,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 21,
+    id: 23,
     name: "📱Samsung Tab S7+",
     purchaseDate: "2026-01-08",
     price: 1617,
