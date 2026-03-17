@@ -75,8 +75,6 @@
       dayOrdinalPrefix: "第",
       dayOrdinalSuffix: "天",
       dayWord: "天",
-      systemDataUpdated: "系统数据更新时间：",
-
       currentItemsCount: "当前物品总数：",
 
       totalValueFooter: "总价值：",
@@ -146,8 +144,6 @@
       dayOrdinalPrefix: "Day",
       dayOrdinalSuffix: "",
       dayWord: "d",
-      systemDataUpdated: "Data Updated:",
-
       currentItemsCount: "Items:",
 
       totalValueFooter: "Total Value:",
