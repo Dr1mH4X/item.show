@@ -99,9 +99,6 @@ function updateRealTime() {
     year: "numeric",
     month: "long",
     day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
   };
   const timeOptions = {
     hour: "2-digit",
@@ -541,7 +538,6 @@ function updateStatistics() {
 
   // Build translated footer labels
   const dict = typeof t === "function" ? t() : null;
-  const updatedLabel = dict ? dict.systemDataUpdated : "系统数据更新时间：";
   const itemsLabel = dict ? dict.currentItemsCount : "当前物品总数：";
   const valueLabel = dict ? dict.totalValueFooter : "总价值：";
 
@@ -566,20 +562,9 @@ function updateStatistics() {
     }
   }
 
-  const now = new Date();
-  const locale =
-    typeof currentLang === "function" && currentLang() === "en"
-      ? "en-US"
-      : "zh-CN";
-  const dateStr = now.toLocaleDateString(locale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   const footer = document.getElementById("systemDataInfo");
   if (footer) {
-    footer.innerHTML = `${updatedLabel}<span id="updateTime">${dateStr}</span> | ${itemsLabel}<span id="infoTotalItems">${items.length}</span> | ${valueLabel}<span id="infoTotalValue">¥${totalValue.toLocaleString()}</span>`;
+    footer.innerHTML = `${itemsLabel}<span id="infoTotalItems">${items.length}</span> | ${valueLabel}<span id="infoTotalValue">¥${totalValue.toLocaleString()}</span>`;
   }
 }
 
