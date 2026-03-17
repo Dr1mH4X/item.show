@@ -11,7 +11,7 @@ const AppAnimations = {
   fadeInEmptyState: (target) => {
     anime.animate(target, {
       opacity: [0, 1],
-      duration: 600,
+      duration: 300,
       easing: "cubicBezier(0.25, 0.8, 0.25, 1)",
     });
   },
@@ -24,8 +24,9 @@ const AppAnimations = {
     anime.animate(targets, {
       translateY: [40, 0],
       opacity: [0, 1],
-      delay: anime.stagger(40),
-      easing: "spring(1, 80, 12, 0)",
+      delay: anime.stagger(30),
+      duration: 350,
+      easing: "easeOutQuint",
     });
   },
 
@@ -38,8 +39,8 @@ const AppAnimations = {
     anime.animate(targets, {
       opacity: 0,
       scale: 0.9,
-      duration: 300,
-      easing: "cubicBezier(0.5, 0, 0.75, 0)",
+      duration: 200,
+      easing: "easeOutQuint",
       onComplete: onComplete,
     });
   },
@@ -51,14 +52,12 @@ const AppAnimations = {
    * @param {number} options.to - End value.
    * @param {Function} options.onUpdate - Callback receiving the current value.
    * @param {Function} options.onComplete - Callback running when finished.
-   * @param {boolean} [options.round=false] - Whether to round values during animation.
    */
-  animateCounter: ({ from = 0, to, onUpdate, onComplete, round = false }) => {
+  animateCounter: ({ from = 0, to, onUpdate, onComplete }) => {
     const valObj = { num: from };
     anime.animate(valObj, {
       num: to,
       easing: "spring(1, 80, 10, 0)",
-      round: round ? 1 : 0,
       onUpdate: () => {
         if (onUpdate) onUpdate(valObj.num);
       },
@@ -76,13 +75,12 @@ const AppAnimations = {
    */
   animatePillMove: (bgElement, targetBtn, container) => {
     anime.set(bgElement, { opacity: 1 });
-    const containerRect = container.getBoundingClientRect();
-    const btnRect = targetBtn.getBoundingClientRect();
 
     anime.animate(bgElement, {
-      left: btnRect.left - containerRect.left,
-      width: btnRect.width,
-      easing: "spring(1, 80, 8, 0)",
+      translateX: targetBtn.offsetLeft - 4,
+      width: targetBtn.offsetWidth,
+      duration: 250,
+      easing: "easeOutQuint",
     });
   },
 
@@ -102,6 +100,17 @@ const AppAnimations = {
       "var(--warning)",
     ];
 
+    const animateShape = (shape) => {
+      anime.animate(shape, {
+        translateX: anime.random(-200, 200),
+        translateY: anime.random(-200, 200),
+        scale: anime.random(0.5, 1.5),
+        duration: anime.random(10000, 20000),
+        easing: "easeInOutSine",
+        onComplete: () => animateShape(shape),
+      });
+    };
+
     for (let i = 0; i < numberOfShapes; i++) {
       const shape = document.createElement("div");
       shape.classList.add("bg-shape");
@@ -113,33 +122,35 @@ const AppAnimations = {
       shape.style.top = `${Math.random() * 100}%`;
       shape.style.background =
         colors[Math.floor(Math.random() * colors.length)];
+      shape.style.opacity = anime.random(10, 30) / 100;
 
       bgContainer.appendChild(shape);
 
-      anime.animate(shape, {
-        translateX: () => anime.random(-200, 200),
-        translateY: () => anime.random(-200, 200),
-        scale: () => anime.random(0.5, 1.5),
-        opacity: [0.1, 0.3],
-        duration: () => anime.random(10000, 20000),
-        delay: () => anime.random(0, 5000),
-        direction: "alternate",
-        loop: true,
-        easing: "easeInOutSine",
-      });
+      animateShape(shape);
     }
   },
 
   /**
-   * Animates a button press effect (scale down and up).
+   * Animates a button press effect (scale down).
    * @param {Element} btn - The button element.
    */
-  animateButtonPress: (btn) => {
+  animateButtonPressDown: (btn) => {
     anime.animate(btn, {
-      scale: [
-        { value: 0.92, duration: 150, easing: "easeOutCubic" },
-        { value: 1, duration: 600, easing: "spring(1, 60, 10, 0)" },
-      ],
+      scale: 0.92,
+      duration: 150,
+      easing: "easeOutCubic",
+    });
+  },
+
+  /**
+   * Animates a button press effect (scale up).
+   * @param {Element} btn - The button element.
+   */
+  animateButtonPressUp: (btn) => {
+    anime.animate(btn, {
+      scale: 1,
+      duration: 300,
+      easing: "easeOutBack",
     });
   },
 
@@ -147,11 +158,19 @@ const AppAnimations = {
    * Initializes button press effects for the entire document.
    */
   initButtonEffects: () => {
-    document.addEventListener("click", (e) => {
+    document.addEventListener("pointerdown", (e) => {
       const btn = e.target.closest("button");
-      if (btn) {
-        AppAnimations.animateButtonPress(btn);
-      }
+      if (btn) AppAnimations.animateButtonPressDown(btn);
+    });
+
+    document.addEventListener("pointerup", (e) => {
+      const btn = e.target.closest("button");
+      if (btn) AppAnimations.animateButtonPressUp(btn);
+    });
+
+    document.addEventListener("pointercancel", (e) => {
+      const btn = e.target.closest("button");
+      if (btn) AppAnimations.animateButtonPressUp(btn);
     });
   },
 
@@ -169,13 +188,15 @@ const AppAnimations = {
     if (!totalValueElement || !totalItemsElement || !avgDailyCostElement)
       return;
 
-    // Reset text content
-    totalValueElement.textContent = "¥0";
-    totalItemsElement.textContent = "0";
-    avgDailyCostElement.textContent = "¥0.00";
+    const parseNum = (str) => parseFloat(str.replace(/[^0-9.-]+/g, "")) || 0;
+
+    const fromTotalValue = parseNum(totalValueElement.textContent);
+    const fromTotalItems = parseNum(totalItemsElement.textContent);
+    const fromAvgDailyCost = parseNum(avgDailyCostElement.textContent);
 
     // Animate total value
     AppAnimations.animateCounter({
+      from: fromTotalValue,
       to: totalValue,
       onUpdate: (val) => {
         totalValueElement.textContent = `¥${Math.round(val).toLocaleString()}`;
@@ -187,8 +208,8 @@ const AppAnimations = {
 
     // Animate total items
     AppAnimations.animateCounter({
+      from: fromTotalItems,
       to: totalItems,
-      round: true,
       onUpdate: (val) => {
         totalItemsElement.textContent = Math.round(val);
       },
@@ -199,6 +220,7 @@ const AppAnimations = {
 
     // Animate average daily cost
     AppAnimations.animateCounter({
+      from: fromAvgDailyCost,
       to: avgDailyCost,
       onUpdate: (val) => {
         avgDailyCostElement.textContent = `¥${val.toFixed(2)}`;
