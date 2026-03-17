@@ -417,14 +417,18 @@ select:-webkit-autofill {
     transition: all 0.3s ease;
 }
 
-.icon-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
-    color: var(--primary);
-    transform: scale(1.1);
+@media (hover: hover) and (pointer: fine) {
+    .icon-btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--primary);
+        transform: scale(1.1);
+    }
 }
 
-:root[data-theme="dark"] .icon-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+@media (hover: hover) and (pointer: fine) {
+    :root[data-theme="dark"] .icon-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
 }
 
 .main-content {
@@ -498,8 +502,10 @@ select:-webkit-autofill {
         color 0.35s ease;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
+@media (hover: hover) and (pointer: fine) {
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
 }
 
 .stat-card .icon {
@@ -704,9 +710,11 @@ select:-webkit-autofill {
         box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.item-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+@media (hover: hover) and (pointer: fine) {
+    .item-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
 }
 
 .item-header {
@@ -1093,4 +1101,18 @@ select:-webkit-autofill {
 
 .toggle-btn i {
     font-size: 0.9rem;
+}
+
+/* Touch target improvements */
+.icon-btn,
+.toggle-btn,
+.filter-btn {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+@media (max-width: 768px) {
+    .search-wrapper input {
+        min-height: 44px;
+    }
 }

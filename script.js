@@ -285,33 +285,37 @@ function renderItems(itemsToRender) {
   const oldItems = container.querySelectorAll(".item-card, .empty-state");
 
   const performRender = () => {
-    container.innerHTML = ""; // Clear previous items
-
     if (itemsToRender.length === 0) {
       const dict = typeof t === "function" ? t() : null;
-
       const emptyTitle = dict ? dict.emptyTitle : "未找到任何物品";
-
       const emptyText = dict
         ? dict.emptyText
         : "请尝试不同的搜索词或清除搜索条件。";
 
-      container.innerHTML = `<div class="empty-state" style="opacity: 0">
+      const emptyState = document.createElement("div");
+      emptyState.className = "empty-state";
+      emptyState.style.opacity = 0;
 
-            <i class="fas fa-search"></i>
+      const icon = document.createElement("i");
+      icon.className = "fas fa-search";
 
-            <h3>${emptyTitle}</h3>
+      const title = document.createElement("h3");
+      title.textContent = emptyTitle;
 
-            <p>${emptyText}</p>
+      const text = document.createElement("p");
+      text.textContent = emptyText;
 
-        </div>`;
+      emptyState.appendChild(icon);
+      emptyState.appendChild(title);
+      emptyState.appendChild(text);
 
+      container.replaceChildren(emptyState);
       AppAnimations.fadeInEmptyState(".empty-state");
-
       return;
     }
 
     const template = document.getElementById("itemCardTemplate");
+    const fragment = document.createDocumentFragment();
 
     itemsToRender.forEach((item) => {
       const cost = calculateDailyCost(item);
@@ -398,7 +402,7 @@ function renderItems(itemsToRender) {
         setLabel("dailyCost", dict ? dict.dailyCost : "日均成本");
         setLabel("daysUsed", dict ? dict.daysUsed : "已使用天数");
 
-        container.appendChild(node);
+        fragment.appendChild(node);
       } else {
         // Fallback: previous innerHTML method (kept for safety)
         const card = document.createElement("div");
@@ -477,9 +481,11 @@ function renderItems(itemsToRender) {
 
                 </div>
             `;
-        container.appendChild(card);
+        fragment.appendChild(card);
       }
     });
+
+    container.replaceChildren(fragment);
 
     // Staggered slide-in animation for item cards
     AppAnimations.animateItemCardsEntry(".item-card");
