@@ -259,4 +259,14 @@ const itemsData = [
     notes: "6+128",
     category: "电子设备",
   },
+  {
+    id: 26,
+    name: "💺JD Z7 Comfort Gen2",
+    purchaseDate: "2026-03-24",
+    price: 548,
+    retirementDate: null,
+    warrantyDate: "2029-03-24",
+    notes: "Support my lower back",
+    category: "生活用品",
+  },
 ];
