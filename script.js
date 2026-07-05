@@ -791,7 +791,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("itemsLoaded", initialRender);
 
   initBackgroundAnimation();
-  initButtonEffects();
 
   const runSearch = debounce(handleSearch, 300);
 
@@ -836,9 +835,6 @@ document.addEventListener("DOMContentLoaded", () => {
     AppAnimations.initBackground("bgAnimation");
   }
 
-  function initButtonEffects() {
-    AppAnimations.initButtonEffects();
-  }
   renderItems(items);
   updateRealTime();
 });

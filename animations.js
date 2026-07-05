@@ -114,50 +114,6 @@ const AppAnimations = {
   },
 
   /**
-   * Animates a button press effect (scale down).
-   * @param {Element} btn - The button element.
-   */
-  animateButtonPressDown: (btn) => {
-    anime.animate(btn, {
-      scale: 0.92,
-      duration: 150,
-      easing: "easeOutCubic",
-    });
-  },
-
-  /**
-   * Animates a button press effect (scale up).
-   * @param {Element} btn - The button element.
-   */
-  animateButtonPressUp: (btn) => {
-    anime.animate(btn, {
-      scale: 1,
-      duration: 300,
-      easing: "easeOutBack",
-    });
-  },
-
-  /**
-   * Initializes button press effects for the entire document.
-   */
-  initButtonEffects: () => {
-    document.addEventListener("pointerdown", (e) => {
-      const btn = e.target.closest("button");
-      if (btn) AppAnimations.animateButtonPressDown(btn);
-    });
-
-    document.addEventListener("pointerup", (e) => {
-      const btn = e.target.closest("button");
-      if (btn) AppAnimations.animateButtonPressUp(btn);
-    });
-
-    document.addEventListener("pointercancel", (e) => {
-      const btn = e.target.closest("button");
-      if (btn) AppAnimations.animateButtonPressUp(btn);
-    });
-  },
-
-  /**
    * Animates the dashboard statistics counters.
    * @param {number} totalValue - Total asset value.
    * @param {number} totalItems - Total number of items.

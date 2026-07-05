@@ -429,8 +429,11 @@ select:-webkit-autofill {
 
 @media (hover: hover) and (pointer: fine) {
     :root[data-theme="dark"] .icon-btn {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.12);
+        background: transparent;
+        border: none;
+        width: auto;
+        height: auto;
+        padding: 0;
     }
 }
 
