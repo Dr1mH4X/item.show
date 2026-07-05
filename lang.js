@@ -161,12 +161,7 @@
 
     setText("avgDailyCostLabel", dict.avgDailyCostLabel);
 
-    const itemsTitleEl = document.getElementById("itemsListTitle");
-
-    if (itemsTitleEl) {
-      itemsTitleEl.innerHTML =
-        '<i class="fas fa-list"></i> ' + dict.itemsListTitle;
-    }
+    setText("itemsListTitleText", dict.itemsListTitle);
 
     setText("searchBtnText", dict.searchBtnText);
 

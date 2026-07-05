@@ -562,10 +562,14 @@ function updateStatistics() {
     }
   }
 
-  const footer = document.getElementById("systemDataInfo");
-  if (footer) {
-    footer.innerHTML = `${itemsLabel}<span id="infoTotalItems">${items.length}</span> | ${valueLabel}<span id="infoTotalValue">¥${totalValue.toLocaleString()}</span>`;
-  }
+  const footerItemsLabel = document.getElementById("systemDataInfoItemsLabel");
+  if (footerItemsLabel) footerItemsLabel.textContent = itemsLabel;
+  const footerInfoItems = document.getElementById("infoTotalItems");
+  if (footerInfoItems) footerInfoItems.textContent = items.length;
+  const footerValueLabel = document.getElementById("systemDataInfoValueLabel");
+  if (footerValueLabel) footerValueLabel.textContent = valueLabel;
+  const footerInfoValue = document.getElementById("infoTotalValue");
+  if (footerInfoValue) footerInfoValue.textContent = `¥${totalValue.toLocaleString()}`;
 }
 
 /**
@@ -580,9 +584,69 @@ function animateStatsCounters() {
 }
 
 /**
+ * Updates translatable labels in existing item cards in-place when language changes.
+ * Avoids full DOM re-render (and exit/entry animations) that causes visual flicker.
+ */
+function updateItemCardLabels(dict) {
+  if (!dict) return;
 
+  document.querySelectorAll(".item-card").forEach((card) => {
+    // Update all data-i18n-key elements (static labels from template)
+    card.querySelectorAll("[data-i18n-key]").forEach((el) => {
+      const key = el.dataset.i18nKey;
+      if (dict[key]) el.textContent = dict[key];
+    });
+
+    // Update status tag text based on its class
+    const statusEl = card.querySelector(".status-tag");
+    if (statusEl) {
+      if (statusEl.classList.contains("active-tag")) {
+        statusEl.textContent = dict.statusActive;
+      } else if (statusEl.classList.contains("retired-tag")) {
+        statusEl.textContent = dict.statusRetired;
+      } else if (statusEl.classList.contains("expired-tag")) {
+        statusEl.textContent = dict.statusExpired;
+      } else if (statusEl.classList.contains("expiring-tag")) {
+        const match = statusEl.textContent.match(/\d+/);
+        if (match) {
+          statusEl.textContent = dict.statusExpiring(Number(match[0]));
+        }
+      }
+    }
+
+    // Update retirement "In Use" / "使用中" text
+    const retireEl = card.querySelector('[data-field="retirementDate"]');
+    if (retireEl) {
+      const t = retireEl.textContent.trim();
+      if (t === "使用中" || t === "In Use") {
+        retireEl.textContent = dict.inUse;
+      }
+    }
+
+    // Update days used word ("5 天" → "5 d" / "5 d" → "5 天")
+    const daysEl = card.querySelector('[data-field="daysUsed"]');
+    if (daysEl) {
+      const match = daysEl.textContent.match(/^(\d+)/);
+      if (match) {
+        daysEl.textContent = `${match[1]} ${dict.dayWord}`;
+      }
+    }
+  });
+
+  // Update empty state if present
+  const emptyState = document.querySelector(".empty-state");
+  if (emptyState) {
+    const title = emptyState.querySelector("h3");
+    const text = emptyState.querySelector("p");
+    if (title) title.textContent = dict.emptyTitle;
+    if (text) text.textContent = dict.emptyText;
+  }
+}
+
+/**
+ 
  * Handles the search functionality based on user input.
-
+ 
  */
 
 function initFilters() {
@@ -766,18 +830,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // Re-render translated dynamic areas when language changes
-  const langSel = document.getElementById("langSwitcher");
-  if (langSel) {
-    langSel.addEventListener("change", () => {
-      updateStatistics();
-      renderItems(items);
-    });
-  }
-  // Listen for global languageChanged event and re-render visible UI
-  document.addEventListener("languageChanged", () => {
+  // Update dynamic areas when language changes (avoids full re-render)
+  document.addEventListener("languageChanged", (e) => {
     updateStatistics();
-    renderItems(items);
+    updateItemCardLabels(e.detail.dict);
   });
 
   function initBackgroundAnimation() {
