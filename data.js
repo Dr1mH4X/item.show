@@ -269,4 +269,14 @@ const itemsData = [
     notes: "Support my lower back",
     category: "生活用品",
   },
+  {
+    id: 27,
+    name: "🏎️MOZA R3",
+    purchaseDate: "2026-06-03",
+    price: 1198,
+    retirementDate: null,
+    warrantyDate: "2026-06-10",
+    notes: "Entry-level wheel, 3Nm torque is decent",
+    category: "电子设备",
+  },
 ];
