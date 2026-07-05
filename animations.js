@@ -68,23 +68,6 @@ const AppAnimations = {
   },
 
   /**
-   * Animates the navigation pill to a specific button.
-   * @param {Element} bgElement - The pill background element.
-   * @param {Element} targetBtn - The button to move to.
-   * @param {Element} container - The container element (for relative positioning).
-   */
-  animatePillMove: (bgElement, targetBtn, container) => {
-    anime.set(bgElement, { opacity: 1 });
-
-    anime.animate(bgElement, {
-      translateX: targetBtn.offsetLeft - 4,
-      width: targetBtn.offsetWidth,
-      duration: 250,
-      easing: "easeOutQuint",
-    });
-  },
-
-  /**
    * Initializes and runs the background shape animations.
    * @param {string} containerId - The ID of the background container.
    */

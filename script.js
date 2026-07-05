@@ -669,11 +669,9 @@ function initFilters() {
     bar.appendChild(btn);
   });
 
-  const bg = bar.querySelector(".filter-pill-bg");
   const btns = bar.querySelectorAll(".filter-btn");
 
-  function movePillTo(targetBtn) {
-    AppAnimations.animatePillMove(bg, targetBtn, bar);
+  function activateBtn(targetBtn) {
     btns.forEach((b) => b.classList.remove("active"));
     targetBtn.classList.add("active");
   }
@@ -682,32 +680,30 @@ function initFilters() {
     btn.addEventListener("click", (e) => {
       const target = e.target.closest(".filter-btn");
       if (!target) return;
-      movePillTo(target);
+      activateBtn(target);
       currentFilter = target.dataset.cat;
       handleSearch();
     });
   });
 
   const activeBtn = bar.querySelector(".filter-btn.active");
-  if (activeBtn) movePillTo(activeBtn);
+  if (activeBtn) activateBtn(activeBtn);
 }
 
 function initToggleGroups() {
   const groups = document.querySelectorAll(".toggle-group");
 
   groups.forEach((group) => {
-    const bg = group.querySelector(".toggle-pill-bg");
     const btns = group.querySelectorAll(".toggle-btn");
 
-    function movePillTo(targetBtn) {
-      AppAnimations.animatePillMove(bg, targetBtn, group);
+    function activateBtn(targetBtn) {
       btns.forEach((b) => b.classList.remove("active"));
       targetBtn.classList.add("active");
     }
 
     btns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        movePillTo(btn);
+        activateBtn(btn);
         const val = btn.dataset.val;
         if (group.id === "langGroup") {
           const s = document.getElementById("langSwitcher");
@@ -725,28 +721,28 @@ function initToggleGroups() {
       });
     });
 
-    // Initial Sync & Listeners
+    // Initial Sync from stored preferences
     if (group.id === "langGroup") {
       const sync = () => {
         const cur = document.getElementById("langSwitcher")?.value || "zh-CN";
         const t = group.querySelector(`[data-val="${cur}"]`);
-        if (t) movePillTo(t);
+        if (t) activateBtn(t);
       };
       setTimeout(sync, 100);
       document.addEventListener("languageChanged", (e) => {
         const t = group.querySelector(`[data-val="${e.detail.lang}"]`);
-        if (t) movePillTo(t);
+        if (t) activateBtn(t);
       });
     } else if (group.id === "themeGroup") {
       const sync = () => {
         const cur = document.getElementById("themeSwitcher")?.value || "auto";
         const t = group.querySelector(`[data-val="${cur}"]`);
-        if (t) movePillTo(t);
+        if (t) activateBtn(t);
       };
       setTimeout(sync, 100);
       document.addEventListener("themeChanged", (e) => {
         const t = group.querySelector(`[data-val="${e.detail.mode}"]`);
-        if (t) movePillTo(t);
+        if (t) activateBtn(t);
       });
     }
   });

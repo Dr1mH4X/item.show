@@ -410,27 +410,27 @@ select:-webkit-autofill {
 }
 
 .icon-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     cursor: pointer;
     font-size: 0.9rem;
-    color: var(--text-sub);
-    padding: 4px;
+    color: var(--primary);
+    padding: 6px;
     border-radius: 50%;
     transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .icon-btn:hover {
-        background: rgba(0, 0, 0, 0.05);
-        color: var(--primary);
-        transform: scale(1.1);
-    }
-}
-
-@media (hover: hover) and (pointer: fine) {
-    :root[data-theme="dark"] .icon-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
+    :root[data-theme="dark"] .icon-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.12);
     }
 }
 
@@ -992,22 +992,6 @@ select:-webkit-autofill {
     backdrop-filter: var(--glass-blur);
 }
 
-.filter-pill-bg {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    height: calc(100% - 10px);
-    background: rgba(var(--secondary-rgb), 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 12px;
-    z-index: 0;
-    box-shadow:
-        0 4px 15px var(--primary-glow),
-        inset 0 2px 5px rgba(255, 255, 255, 0.3);
-    opacity: 0;
-}
-
 .filter-btn {
     background: transparent;
     border: none;
@@ -1018,11 +1002,14 @@ select:-webkit-autofill {
     cursor: pointer;
     position: relative;
     z-index: 1;
-    transition: color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition:
+        color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+        background 0.25s ease;
+    border-radius: 12px;
 }
 
 .filter-btn.active {
-    color: #ffffff;
+    color: var(--primary);
 }
 
 /* Search Bar - Minimal */
@@ -1065,49 +1052,36 @@ select:-webkit-autofill {
 .toggle-group {
     display: flex;
     position: relative;
-    background: var(--surface);
-    padding: 4px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    backdrop-filter: var(--glass-blur);
-    margin-left: 10px;
+    background: transparent;
+    padding: 2px;
+    border-radius: 12px;
+    border: none;
+    margin-left: 8px;
+    gap: 2px;
     flex-shrink: 0;
-}
-
-.toggle-pill-bg {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    height: calc(100% - 8px);
-    background: rgba(var(--secondary-rgb), 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 16px;
-    z-index: 0;
-    box-shadow:
-        0 2px 8px var(--primary-glow),
-        inset 0 2px 5px rgba(255, 255, 255, 0.3);
-    opacity: 0;
 }
 
 .toggle-btn {
     background: transparent;
     border: none;
-    padding: 6px 16px;
-    font-size: 0.85rem;
+    padding: 4px 10px;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: var(--text-main);
+    color: var(--text-sub);
     cursor: pointer;
     position: relative;
     z-index: 1;
-    transition: color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition:
+        color 0.3s ease,
+        background 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
 }
 
 .toggle-btn.active {
-    color: #ffffff;
+    color: var(--primary);
 }
 
 .toggle-btn i {
