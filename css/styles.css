@@ -19,7 +19,7 @@
 
     --warning: #ffb703;
 
-    --gray: #6c757d;
+    --gray: #5a6268;
 
     --card-bg: rgba(255, 255, 255, 0.92);
 
@@ -70,6 +70,11 @@ body {
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
 
 .bg-shape {
@@ -337,6 +342,15 @@ select:-webkit-autofill {
     }
 }
 
+#sortOrderBtn i {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+#sortOrderBtn.sort-asc i {
+    transform: rotate(180deg);
+}
+
 .main-content {
     padding-top: 30px;
 }
@@ -447,11 +461,11 @@ select:-webkit-autofill {
 .stat-card:nth-child(2) .icon {
     background: linear-gradient(
         135deg,
-        rgba(247, 37, 133, 0.2),
-        rgba(247, 37, 133, 0.05)
+        rgba(108, 117, 125, 0.2),
+        rgba(108, 117, 125, 0.05)
     );
-    color: var(--danger);
-    box-shadow: 0 4px 15px rgba(247, 37, 133, 0.15);
+    color: var(--gray);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.15);
 }
 
 .stat-card:nth-child(3) .icon {
@@ -850,8 +864,9 @@ select:-webkit-autofill {
     }
 
     .section-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         gap: 15px;
     }
 

@@ -47,6 +47,8 @@
       dayWord: "天",
       currentItemsCount: "当前物品总数：",
       totalValueFooter: "总价值：",
+      sortNewest: "按购买日期从新到旧排序",
+      sortOldest: "按购买日期从旧到新排序",
     },
 
     en: {
@@ -85,6 +87,8 @@
       dayWord: "d",
       currentItemsCount: "Items:",
       totalValueFooter: "Total Value:",
+      sortNewest: "Sort by purchase date (newest first)",
+      sortOldest: "Sort by purchase date (oldest first)",
     },
   };
 
@@ -131,6 +135,14 @@
     }
 
     setText("assetsCostNote", dict.assetsCostNote);
+
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortBtn) {
+      sortBtn.title =
+        sortBtn.dataset.order === "asc"
+          ? dict.sortOldest
+          : dict.sortNewest;
+    }
 
     const systemLabelSpan = document.querySelector("#systemTimeLabel .label-text");
     if (systemLabelSpan) {

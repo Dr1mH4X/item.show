@@ -89,6 +89,7 @@ let globalTotalItems = 0;
 let globalAvgDailyCost = 0;
 let currentFilter = "all";
 let currentCalcMode = 0; // 0=All Purchase, 1=Active Purchase, 2=Net Value
+let currentSortOrder = "desc"; // desc=新→旧, asc=旧→新
 
 /**
  * Updates the current date and time displayed in the banner.
@@ -270,6 +271,22 @@ function getItemStatus(item) {
     return { text, class: "expiring-tag" };
   }
   return { text: dict ? dict.statusActive : "使用中", class: "active-tag" };
+}
+
+/**
+ * Sorts items by purchase date. Items without a parseable date always go last.
+ * @param {Array<object>} list - The list to sort (not mutated).
+ */
+function sortItems(list) {
+  const dir = currentSortOrder === "asc" ? 1 : -1;
+  return [...list].sort((a, b) => {
+    const ta = parseDateFlexible(a.purchaseDate);
+    const tb = parseDateFlexible(b.purchaseDate);
+    if (!ta && !tb) return 0;
+    if (!ta) return 1;
+    if (!tb) return -1;
+    return (ta - tb) * dir;
+  });
 }
 
 /**
@@ -765,7 +782,7 @@ function handleSearch() {
 
     return matchesCat && matchesSearch;
   });
-  renderItems(filteredItems);
+  renderItems(sortItems(filteredItems));
 }
 
 // Event Listeners
@@ -778,7 +795,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     animateStatsCounters();
 
-    renderItems(items);
+    handleSearch();
     initFilters();
     initToggleGroups();
   };
@@ -804,6 +821,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const sortBtn = document.getElementById("sortOrderBtn");
+  if (sortBtn) {
+    sortBtn.addEventListener("click", () => {
+      currentSortOrder = currentSortOrder === "desc" ? "asc" : "desc";
+      const asc = currentSortOrder === "asc";
+      sortBtn.dataset.order = currentSortOrder;
+      sortBtn.classList.toggle("sort-asc", asc);
+      sortBtn.setAttribute("aria-pressed", String(asc));
+      const dict = typeof t === "function" ? t() : null;
+      sortBtn.title = asc
+        ? dict && dict.sortOldest
+          ? dict.sortOldest
+          : "按购买日期从旧到新排序"
+        : dict && dict.sortNewest
+          ? dict.sortNewest
+          : "按购买日期从新到旧排序";
+      handleSearch();
+    });
+  }
+
   document.getElementById("searchInput").addEventListener("input", runSearch);
 
   document
@@ -824,13 +861,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("languageChanged", (e) => {
     updateStatistics();
     updateItemCardLabels(e.detail.dict);
+    const sortBtn = document.getElementById("sortOrderBtn");
+    if (sortBtn && e.detail.dict) {
+      sortBtn.title =
+        sortBtn.dataset.order === "asc"
+          ? e.detail.dict.sortOldest
+          : e.detail.dict.sortNewest;
+    }
   });
 
   function initBackgroundAnimation() {
     AppAnimations.initBackground("bgAnimation");
   }
 
-  renderItems(items);
+  handleSearch();
   updateRealTime();
 });
 
