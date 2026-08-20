@@ -109,20 +109,6 @@ header {
     gap: 8px;
 }
 
-.header-controls .icon-btn {
-    background: transparent;
-    border: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    color: var(--text-sub);
-    font-size: 0.9rem;
-    padding: 4px 10px;
-    border-radius: 8px;
-    width: auto;
-    height: auto;
-}
-
 .header-controls a.icon-btn {
     text-decoration: none;
 }
@@ -252,21 +238,22 @@ select:-webkit-autofill {
 }
 
 .icon-btn {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
     cursor: pointer;
     font-size: 0.9rem;
-    color: var(--primary);
-    padding: 6px;
-    border-radius: 50%;
+    color: var(--text-sub);
+    padding: 4px 10px;
+    border-radius: 8px;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: auto;
+    height: auto;
 }
 
 @media (hover: hover) and (pointer: fine) {
