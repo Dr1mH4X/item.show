@@ -207,8 +207,11 @@ select:-webkit-autofill {
 }
 
 :root[data-theme="dark"] .search-wrapper input:focus {
-    border-color: rgba(59, 130, 246, 0.55);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    border-color: rgba(6, 182, 212, 0.45);
+    background: rgba(15, 23, 42, 0.78);
+    box-shadow:
+        0 0 0 3px rgba(6, 182, 212, 0.18),
+        0 8px 40px -8px rgba(6, 182, 212, 0.3);
 }
 
 :root[data-theme="dark"] ::placeholder {
@@ -841,6 +844,32 @@ select:-webkit-autofill {
     position: relative;
 }
 
+/* Soft self-glow halo behind the input, matching stat-card glow */
+.search-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    z-index: 0;
+    border-radius: 26px;
+    background: radial-gradient(
+        55% 80% at 50% 50%,
+        var(--primary-glow),
+        transparent 75%
+    );
+    filter: blur(18px);
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition:
+        opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-wrapper:focus-within::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
 .search-wrapper input {
     width: 100%;
     padding: 18px 24px;
@@ -853,13 +882,22 @@ select:-webkit-autofill {
     font-size: 1rem;
     color: var(--text-main);
     outline: none;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    z-index: 1;
+    transition:
+        background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow);
 }
 
 .search-wrapper input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px var(--primary-glow);
+    border-color: rgba(6, 182, 212, 0.55);
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow:
+        0 0 0 3px rgba(6, 182, 212, 0.18),
+        0 8px 40px -8px rgba(6, 182, 212, 0.35),
+        0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .search-icon {
@@ -869,6 +907,12 @@ select:-webkit-autofill {
     transform: translateY(-50%);
     color: var(--text-sub);
     pointer-events: none;
+    z-index: 1;
+    transition: color 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-wrapper:focus-within .search-icon {
+    color: var(--primary);
 }
 
 /* Toggle Group Styles (Header) */
