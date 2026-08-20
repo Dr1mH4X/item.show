@@ -706,43 +706,38 @@ function initToggleGroups() {
         activateBtn(btn);
         const val = btn.dataset.val;
         if (group.id === "langGroup") {
-          const s = document.getElementById("langSwitcher");
-          if (s) {
-            s.value = val;
-            s.dispatchEvent(new Event("change"));
-          }
+          if (typeof applyLanguage === "function") applyLanguage(val);
         } else if (group.id === "themeGroup") {
-          const s = document.getElementById("themeSwitcher");
-          if (s) {
-            s.value = val;
-            s.dispatchEvent(new Event("change"));
-          }
+          if (typeof applyThemeMode === "function") applyThemeMode(val);
         }
       });
     });
 
-    // Initial Sync from stored preferences
+    // Initial sync from stored preferences
     if (group.id === "langGroup") {
       const sync = () => {
-        const cur = document.getElementById("langSwitcher")?.value || "zh-CN";
-        const t = group.querySelector(`[data-val="${cur}"]`);
-        if (t) activateBtn(t);
+        const cur = typeof currentLang === "function" ? currentLang() : "zh-CN";
+        const target = group.querySelector(`[data-val="${cur}"]`);
+        if (target) activateBtn(target);
       };
       setTimeout(sync, 100);
       document.addEventListener("languageChanged", (e) => {
-        const t = group.querySelector(`[data-val="${e.detail.lang}"]`);
-        if (t) activateBtn(t);
+        const target = group.querySelector(`[data-val="${e.detail.lang}"]`);
+        if (target) activateBtn(target);
       });
     } else if (group.id === "themeGroup") {
       const sync = () => {
-        const cur = document.getElementById("themeSwitcher")?.value || "auto";
-        const t = group.querySelector(`[data-val="${cur}"]`);
-        if (t) activateBtn(t);
+        const cur =
+          typeof getCurrentThemeMode === "function"
+            ? getCurrentThemeMode()
+            : "auto";
+        const target = group.querySelector(`[data-val="${cur}"]`);
+        if (target) activateBtn(target);
       };
       setTimeout(sync, 100);
       document.addEventListener("themeChanged", (e) => {
-        const t = group.querySelector(`[data-val="${e.detail.mode}"]`);
-        if (t) activateBtn(t);
+        const target = group.querySelector(`[data-val="${e.detail.mode}"]`);
+        if (target) activateBtn(target);
       });
     }
   });
