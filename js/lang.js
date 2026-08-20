@@ -14,17 +14,19 @@
     "zh-CN": {
       // Static UI labels
       totalValueLabel: "总资产",
+      totalValueLabelShort: "总资产",
       totalValueLabelAll: "总资产 (总值)",
       totalValueLabelActive: "总资产 (未退役)",
       totalValueLabelNet: "总资产 (净值)",
 
       totalItemsLabel: "物品总数",
+      totalItemsLabelShort: "物品",
       avgDailyCostLabel: "平均每日成本",
+      avgDailyCostLabelShort: "每日成本",
       itemsListTitle: "物品资产清单",
       searchBtnText: "搜索",
       searchPlaceholder: "搜索物品名称、类别或备注...",
-      assetsCostNote: "所有资产成本均基于当前时间计算",
-      systemTimeLabel: "系统时间:",
+      timeSourceNote: "所有资产成本均基于当前时间计算",
 
       // Dynamic item card & runtime labels
       purchaseDate: "购买日期",
@@ -41,12 +43,7 @@
       statusExpiring: (d) => `保修即将到期 (${d}天)`,
       statusActive: "使用中",
 
-      dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-      dayOrdinalPrefix: "第",
-      dayOrdinalSuffix: "天",
       dayWord: "天",
-      currentItemsCount: "当前物品总数：",
-      totalValueFooter: "总价值：",
       sortNewest: "按购买日期从新到旧排序",
       sortOldest: "按购买日期从旧到新排序",
     },
@@ -54,17 +51,19 @@
     en: {
       // Static UI labels
       totalValueLabel: "Total Asset Value",
+      totalValueLabelShort: "Assets",
       totalValueLabelAll: "Total Asset Value (All)",
       totalValueLabelActive: "Total Asset Value (Active)",
       totalValueLabelNet: "Total Asset Value (Net)",
 
       totalItemsLabel: "Total Items",
+      totalItemsLabelShort: "Items",
       avgDailyCostLabel: "Average Daily Cost",
+      avgDailyCostLabelShort: "Daily Cost",
       itemsListTitle: "Asset Items List",
       searchBtnText: "Search",
       searchPlaceholder: "Search name, category or notes...",
-      assetsCostNote: "All asset costs are calculated based on current time",
-      systemTimeLabel: "System Time:",
+      timeSourceNote: "All asset costs are calculated based on current time",
 
       // Dynamic item card & runtime labels
       purchaseDate: "Purchased",
@@ -81,12 +80,7 @@
       statusExpiring: (d) => `Expiring (${d}d)`,
       statusActive: "Active",
 
-      dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      dayOrdinalPrefix: "Day",
-      dayOrdinalSuffix: "",
       dayWord: "d",
-      currentItemsCount: "Items:",
-      totalValueFooter: "Total Value:",
       sortNewest: "Sort by purchase date (newest first)",
       sortOldest: "Sort by purchase date (oldest first)",
     },
@@ -128,13 +122,12 @@
     setText("avgDailyCostLabel", dict.avgDailyCostLabel);
     setText("itemsListTitleText", dict.itemsListTitle);
     setText("searchBtnText", dict.searchBtnText);
+    setText("timeSourceNote", dict.timeSourceNote);
 
     const searchInput = document.getElementById("searchInput");
     if (searchInput) {
       searchInput.setAttribute("placeholder", dict.searchPlaceholder);
     }
-
-    setText("assetsCostNote", dict.assetsCostNote);
 
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn) {
@@ -142,11 +135,6 @@
         sortBtn.dataset.order === "asc"
           ? dict.sortOldest
           : dict.sortNewest;
-    }
-
-    const systemLabelSpan = document.querySelector("#systemTimeLabel .label-text");
-    if (systemLabelSpan) {
-      systemLabelSpan.textContent = dict.systemTimeLabel;
     }
 
     document.dispatchEvent(

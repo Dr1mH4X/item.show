@@ -91,40 +91,7 @@ let currentFilter = "all";
 let currentCalcMode = 0; // 0=All Purchase, 1=Active Purchase, 2=Net Value
 let currentSortOrder = "desc"; // desc=新→旧, asc=旧→新
 
-/**
- * Updates the current date and time displayed in the banner.
- */
-function updateRealTime() {
-  const now = new Date();
-  const dateOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const timeOptions = {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  };
-
-  const lang = typeof currentLang === "function" ? currentLang() : "zh-CN";
-  const locale = lang === "en" ? "en-US" : "zh-CN";
-  const dateStr = now.toLocaleDateString(locale, dateOptions);
-  const timeStr = now.toLocaleTimeString(locale, timeOptions);
-  const dayNames =
-    typeof t === "function"
-      ? t().dayNames
-      : ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-  const dayOfWeek = dayNames[now.getDay()];
-  const ordinalPrefix = typeof t === "function" ? t().dayOrdinalPrefix : "第";
-  const ordinalSuffix = typeof t === "function" ? t().dayOrdinalSuffix : "天";
-
-  document.getElementById("currentDateTime").textContent = dateStr;
-  document.getElementById("currentDayInfo").textContent =
-    `${dayOfWeek} | ${ordinalPrefix}${Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)}${ordinalSuffix}`;
-  document.getElementById("systemTime").textContent = timeStr;
-}
+const IS_SHORT_QUERY = window.matchMedia("(max-width: 480px)");
 
 /**
  * Calculates the daily cost, total lifespan days, days used, and consumed value for an item.
@@ -553,40 +520,62 @@ function updateStatistics() {
   globalTotalItems = items.length;
   globalAvgDailyCost = totalDailyCost;
 
-  // Build translated footer labels
-  const dict = typeof t === "function" ? t() : null;
-  const itemsLabel = dict ? dict.currentItemsCount : "当前物品总数：";
-  const valueLabel = dict ? dict.totalValueFooter : "总价值：";
-
   // Update Main Total Value Label based on mode
+  const dict = typeof t === "function" ? t() : null;
+  updateTotalValueLabel(dict);
+}
+
+/**
+ * Updates the total value card label based on calc mode and viewport width.
+ * Uses short labels on narrow screens to prevent wrapping.
+ * @param {object|null} dict - Translation dictionary.
+ */
+function updateTotalValueLabel(dict) {
   const mainValueLabelEl = document.getElementById("totalValueLabel");
-  if (mainValueLabelEl) {
-    if (currentCalcMode === 0) {
-      mainValueLabelEl.textContent =
-        dict && dict.totalValueLabelAll
-          ? dict.totalValueLabelAll
-          : "总资产价值 (全部购入)";
-    } else if (currentCalcMode === 1) {
-      mainValueLabelEl.textContent =
-        dict && dict.totalValueLabelActive
-          ? dict.totalValueLabelActive
-          : "总资产价值 (未退役)";
-    } else {
-      mainValueLabelEl.textContent =
-        dict && dict.totalValueLabelNet
-          ? dict.totalValueLabelNet
-          : "总资产价值 (净值)";
-    }
+  if (!mainValueLabelEl) return;
+  if (!dict) {
+    mainValueLabelEl.textContent = "总资产价值";
+    return;
+  }
+  if (IS_SHORT_QUERY.matches) {
+    mainValueLabelEl.textContent = dict.totalValueLabelShort;
+    return;
+  }
+  if (currentCalcMode === 0) {
+    mainValueLabelEl.textContent =
+      dict.totalValueLabelAll || "总资产价值 (全部购入)";
+  } else if (currentCalcMode === 1) {
+    mainValueLabelEl.textContent =
+      dict.totalValueLabelActive || "总资产价值 (未退役)";
+  } else {
+    mainValueLabelEl.textContent =
+      dict.totalValueLabelNet || "总资产价值 (净值)";
+  }
+}
+
+/**
+ * Syncs stat card labels (total items / avg daily cost) with short variants
+ * on narrow screens, keeping them on a single line.
+ */
+function syncStatLabels() {
+  const dict = typeof t === "function" ? t() : null;
+  if (!dict) return;
+
+  const itemsEl = document.getElementById("totalItemsLabel");
+  if (itemsEl) {
+    itemsEl.textContent = IS_SHORT_QUERY.matches
+      ? dict.totalItemsLabelShort
+      : dict.totalItemsLabel;
   }
 
-  const footerItemsLabel = document.getElementById("systemDataInfoItemsLabel");
-  if (footerItemsLabel) footerItemsLabel.textContent = itemsLabel;
-  const footerInfoItems = document.getElementById("infoTotalItems");
-  if (footerInfoItems) footerInfoItems.textContent = items.length;
-  const footerValueLabel = document.getElementById("systemDataInfoValueLabel");
-  if (footerValueLabel) footerValueLabel.textContent = valueLabel;
-  const footerInfoValue = document.getElementById("infoTotalValue");
-  if (footerInfoValue) footerInfoValue.textContent = `¥${totalValue.toLocaleString()}`;
+  const avgEl = document.getElementById("avgDailyCostLabel");
+  if (avgEl) {
+    avgEl.textContent = IS_SHORT_QUERY.matches
+      ? dict.avgDailyCostLabelShort
+      : dict.avgDailyCostLabel;
+  }
+
+  updateTotalValueLabel(dict);
 }
 
 /**
@@ -787,9 +776,6 @@ function handleSearch() {
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
-  updateRealTime();
-  setInterval(updateRealTime, 1000);
-
   const initialRender = () => {
     updateStatistics();
 
@@ -820,6 +806,59 @@ document.addEventListener("DOMContentLoaded", () => {
       animateStatsCounters();
     });
   }
+
+  const calcCard = document.querySelector(".stat-card:first-child");
+  if (calcCard) {
+    calcCard.addEventListener("click", () => {
+      if (!IS_SHORT_QUERY.matches) return;
+      currentCalcMode = (currentCalcMode + 1) % 3;
+      updateStatistics();
+      animateStatsCounters();
+    });
+  }
+
+  const mobileLangBtn = document.getElementById("mobileLangBtn");
+  if (mobileLangBtn) {
+    mobileLangBtn.addEventListener("click", () => {
+      if (typeof applyLanguage === "function") {
+        applyLanguage(currentLang() === "zh-CN" ? "en" : "zh-CN");
+      }
+    });
+  }
+
+  const THEME_ICONS = {
+    auto: "fa-circle-half-stroke",
+    light: "fa-sun",
+    dark: "fa-moon",
+  };
+  const mobileThemeBtn = document.getElementById("mobileThemeBtn");
+  const updateMobileThemeIcon = () => {
+    if (!mobileThemeBtn) return;
+    const mode =
+      typeof getCurrentThemeMode === "function"
+        ? getCurrentThemeMode()
+        : "auto";
+    const icon = mobileThemeBtn.querySelector("i");
+    if (icon) {
+      icon.className = `fas ${THEME_ICONS[mode] || THEME_ICONS.auto}`;
+    }
+  };
+  if (mobileThemeBtn) {
+    mobileThemeBtn.addEventListener("click", () => {
+      const order = ["auto", "light", "dark"];
+      const cur =
+        typeof getCurrentThemeMode === "function"
+          ? getCurrentThemeMode()
+          : "auto";
+      const next = order[(order.indexOf(cur) + 1) % order.length];
+      if (typeof applyThemeMode === "function") applyThemeMode(next);
+      updateMobileThemeIcon();
+    });
+    document.addEventListener("themeChanged", updateMobileThemeIcon);
+  }
+
+  const onResize = debounce(() => syncStatLabels(), 200);
+  window.addEventListener("resize", onResize);
 
   const sortBtn = document.getElementById("sortOrderBtn");
   if (sortBtn) {
@@ -861,6 +900,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("languageChanged", (e) => {
     updateStatistics();
     updateItemCardLabels(e.detail.dict);
+    syncStatLabels();
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn && e.detail.dict) {
       sortBtn.title =
@@ -874,8 +914,8 @@ document.addEventListener("DOMContentLoaded", () => {
     AppAnimations.initBackground("bgAnimation");
   }
 
+  syncStatLabels();
   handleSearch();
-  updateRealTime();
 });
 
 // i18n definitions removed from script.js.
