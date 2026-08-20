@@ -650,9 +650,9 @@ function updateItemCardLabels(dict) {
 }
 
 /**
- 
+
  * Handles the search functionality based on user input.
- 
+
  */
 
 function initFilters() {
@@ -791,11 +791,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initBackgroundAnimation();
 
   const runSearch = debounce(handleSearch, 300);
-
-  const searchBtn = document.getElementById("searchBtn");
-  if (searchBtn) {
-    searchBtn.addEventListener("click", () => runSearch.flush());
-  }
 
   const toggleCalcBtn = document.getElementById("toggleCalcModeBtn");
   if (toggleCalcBtn) {

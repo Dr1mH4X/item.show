@@ -24,7 +24,6 @@
       avgDailyCostLabel: "平均每日成本",
       avgDailyCostLabelShort: "每日成本",
       itemsListTitle: "物品资产清单",
-      searchBtnText: "搜索",
       searchPlaceholder: "搜索物品名称、类别或备注...",
       timeSourceNote: "所有资产成本均基于当前时间计算",
 
@@ -61,7 +60,6 @@
       avgDailyCostLabel: "Average Daily Cost",
       avgDailyCostLabelShort: "Daily Cost",
       itemsListTitle: "Asset Items List",
-      searchBtnText: "Search",
       searchPlaceholder: "Search name, category or notes...",
       timeSourceNote: "All asset costs are calculated based on current time",
 
@@ -121,7 +119,6 @@
     setText("totalItemsLabel", dict.totalItemsLabel);
     setText("avgDailyCostLabel", dict.avgDailyCostLabel);
     setText("itemsListTitleText", dict.itemsListTitle);
-    setText("searchBtnText", dict.searchBtnText);
     setText("timeSourceNote", dict.timeSourceNote);
 
     const searchInput = document.getElementById("searchInput");
@@ -132,9 +129,7 @@
     const sortBtn = document.getElementById("sortOrderBtn");
     if (sortBtn) {
       sortBtn.title =
-        sortBtn.dataset.order === "asc"
-          ? dict.sortOldest
-          : dict.sortNewest;
+        sortBtn.dataset.order === "asc" ? dict.sortOldest : dict.sortNewest;
     }
 
     document.dispatchEvent(
@@ -149,7 +144,9 @@
   window.t = t;
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => applyLanguage(currentLang()));
+    document.addEventListener("DOMContentLoaded", () =>
+      applyLanguage(currentLang()),
+    );
   } else {
     applyLanguage(currentLang());
   }
