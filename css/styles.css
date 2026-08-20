@@ -680,16 +680,6 @@ select:-webkit-autofill {
 }
 
 @media (max-width: 768px) {
-    .filter-bar {
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 5px;
-    }
-
-    .filter-btn {
-        white-space: nowrap;
-    }
-
     header {
         height: auto;
         padding: 15px 0;
@@ -732,19 +722,11 @@ select:-webkit-autofill {
     .header-controls {
         flex-direction: row;
         align-items: center;
-        gap: 6px;
+        gap: 2px;
     }
 
     .mobile-controls {
-        gap: 4px;
-    }
-
-    .toggle-group {
-        display: none;
-    }
-
-    .mobile-controls {
-        display: flex;
+        gap: 2px;
     }
 
     .logo h1 {
@@ -940,5 +922,193 @@ select:-webkit-autofill {
 @media (max-width: 768px) {
     .search-wrapper input {
         min-height: 44px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-btn {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .items-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 15px;
+    }
+
+    .item-card {
+        min-width: 0;
+        border-radius: 16px;
+    }
+
+    .item-header {
+        padding: 12px 14px;
+    }
+
+    .item-header h3 {
+        font-size: 1.05rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 16px;
+    }
+
+    .item-header .price {
+        font-size: 1.2rem;
+    }
+
+    .status-tag {
+        top: 12px;
+        right: 12px;
+        width: 10px;
+        height: 10px;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 0;
+        text-indent: -9999px;
+        max-width: none;
+        border: 2px solid rgba(255, 255, 255, 0.95);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    }
+
+    .status-tag.active-tag {
+        background: #06b6d4;
+    }
+
+    .status-tag.expired-tag,
+    .status-tag.expiring-tag {
+        background: #d68c00;
+    }
+
+    .status-tag.retired-tag {
+        background: var(--danger);
+    }
+
+    :root[data-theme="dark"] .status-tag.active-tag {
+        background: #67e8f9;
+    }
+
+    :root[data-theme="dark"] .status-tag.expired-tag,
+    :root[data-theme="dark"] .status-tag.expiring-tag {
+        background: #fcd34d;
+    }
+
+    .item-body {
+        padding: 12px 14px;
+    }
+
+    .item-body > .item-detail:nth-child(2),
+    .item-body > .item-detail:nth-child(3) {
+        display: none;
+    }
+
+    .item-detail {
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+        font-size: 0.78rem;
+    }
+
+    .detail-value {
+        max-width: 55%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .cost-calculation {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin-top: 8px;
+    }
+
+    .cost-calculation .title {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .items-grid {
+        gap: 10px;
+    }
+
+    .item-header {
+        padding: 12px;
+    }
+
+    .item-header h3 {
+        font-size: 0.95rem;
+    }
+
+    .item-header .price {
+        font-size: 1.05rem;
+    }
+
+    .item-body {
+        padding: 12px;
+    }
+
+    .item-detail {
+        font-size: 0.72rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .items-grid {
+        gap: 8px;
+    }
+
+    .item-header {
+        padding: 10px;
+    }
+
+    .item-header h3 {
+        font-size: 0.9rem;
+    }
+
+    .item-header .price {
+        font-size: 0.95rem;
+    }
+
+    .item-body {
+        padding: 10px;
+    }
+
+    .item-detail {
+        font-size: 0.68rem;
+    }
+
+    .cost-calculation {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .toggle-group {
+        display: none;
+    }
+
+    .mobile-controls {
+        display: flex;
+        gap: 2px;
+    }
+
+    .header-controls .icon-btn {
+        min-width: 36px;
+        padding: 4px 6px;
     }
 }
