@@ -116,6 +116,16 @@ const itemsData = [
   },
   {
     id: 12,
+    name: "⌨️AULA F87 Pro",
+    purchaseDate: "2023-11-20",
+    price: 199,
+    retirementDate: null,
+    warrantyDate: "2024-11-20",
+    notes: "Easy do SG(Apex)",
+    category: "电子设备",
+  },
+  {
+    id: 13,
     name: "💻Lenovo ThinkPad X280",
     purchaseDate: "2024-05-07",
     price: 1146,
@@ -126,7 +136,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 13,
+    id: 14,
     name: "🖥️AMD Ryzen5 5600",
     purchaseDate: "2024-05-18",
     price: 610,
@@ -137,7 +147,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 14,
+    id: 15,
     name: "🖥️ASUS RTX 3060 Ti",
     purchaseDate: "2024-05-18",
     price: 2080,
@@ -148,7 +158,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 15,
+    id: 16,
     name: "📱Apple iPhone 15 Pro",
     purchaseDate: "2024-11-23",
     price: 7499,
@@ -158,7 +168,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 16,
+    id: 17,
     name: "🥤Xiaomi thermos 500ml",
     purchaseDate: "2025-02-13",
     price: 89,
@@ -168,7 +178,7 @@ const itemsData = [
     category: "生活用品",
   },
   {
-    id: 17,
+    id: 18,
     name: "🪒Xiaomi E-Razor S100",
     purchaseDate: "2025-02-23",
     price: 72,
@@ -178,7 +188,7 @@ const itemsData = [
     category: "生活用品",
   },
   {
-    id: 18,
+    id: 19,
     name: "🎧Apple AirPods 4 ANC",
     purchaseDate: "2025-05-08",
     price: 1061,
@@ -188,7 +198,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 19,
+    id: 20,
     name: "🗂️UGREEN DXP4800 Plus",
     purchaseDate: "2025-05-27",
     price: 2350,
@@ -198,7 +208,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 20,
+    id: 21,
     name: "🖥️GUNNIR Arc A580",
     purchaseDate: "2025-09-08",
     price: 830,
@@ -209,7 +219,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 21,
+    id: 22,
     name: "🖥️AMD Ryzen5 5600X",
     purchaseDate: "2025-09-08",
     price: 568,
@@ -220,7 +230,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 22,
+    id: 23,
     name: "🔋CUKTECH 10Mini",
     purchaseDate: "2025-11-13",
     price: 156,
@@ -230,7 +240,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 23,
+    id: 24,
     name: "🔌UGREEN USBHUB",
     purchaseDate: "2025-12-11",
     price: 111,
@@ -240,7 +250,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 24,
+    id: 25,
     name: "💻Apple MacBook Air M2",
     purchaseDate: "2025-12-17",
     price: 5804,
@@ -250,7 +260,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 25,
+    id: 26,
     name: "📱Samsung Tab S7+",
     purchaseDate: "2026-01-08",
     price: 1617,
@@ -260,7 +270,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 26,
+    id: 27,
     name: "💺JD Z7 Comfort Gen2",
     purchaseDate: "2026-03-24",
     price: 548,
@@ -270,7 +280,17 @@ const itemsData = [
     category: "生活用品",
   },
   {
-    id: 27,
+    id: 28,
+    name: "🎒Tomtoc Slash T64",
+    purchaseDate: "2026-05-19",
+    price: 261,
+    retirementDate: null,
+    warrantyDate: "2027-05-19",
+    notes: "Cool",
+    category: "生活用品",
+  },
+  {
+    id: 29,
     name: "🏎️MOZA R3",
     purchaseDate: "2026-06-03",
     price: 1198,
@@ -281,7 +301,7 @@ const itemsData = [
     category: "电子设备",
   },
   {
-    id: 28,
+    id: 30,
     name: "🎮GameSir G7 Pro × ZZZ",
     purchaseDate: "2026-07-26",
     price: 629,
