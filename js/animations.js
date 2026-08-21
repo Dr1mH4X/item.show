@@ -105,7 +105,8 @@ const AppAnimations = {
       shape.style.top = `${Math.random() * 100}%`;
       shape.style.background =
         colors[Math.floor(Math.random() * colors.length)];
-      shape.style.opacity = anime.random(10, 30) / 100;
+      const isDark = document.documentElement.dataset.theme === "dark";
+      shape.style.opacity = isDark ? anime.random(3, 8) / 100 : anime.random(10, 30) / 100;
 
       bgContainer.appendChild(shape);
 
@@ -170,3 +171,11 @@ const AppAnimations = {
     });
   },
 };
+
+// 主题切换时更新背景圆形透明度
+document.addEventListener("themeChanged", () => {
+  const isDark = document.documentElement.dataset.theme === "dark";
+  document.querySelectorAll("#bgAnimation .bg-shape").forEach((shape) => {
+    shape.style.opacity = isDark ? anime.random(3, 8) / 100 : anime.random(10, 30) / 100;
+  });
+});

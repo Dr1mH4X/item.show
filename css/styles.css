@@ -47,7 +47,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 0;
     overflow: hidden;
     pointer-events: none;
 }
@@ -65,10 +65,13 @@ body {
 }
 
 :root[data-theme="dark"] .bg-shape {
-    display: none;
+    display: block;
+    filter: hue-rotate(180deg);
 }
 
 .container {
+    position: relative;
+    z-index: 1;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px 40px;
@@ -193,20 +196,45 @@ select:-webkit-autofill {
 }
 
 :root[data-theme="dark"] header {
-    background: var(--card-bg);
+    background: rgba(30, 41, 59, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-:root[data-theme="dark"] .item-card,
-:root[data-theme="dark"] .items-section,
-:root[data-theme="dark"] .stat-card {
-    background: rgba(30, 41, 59, 0.6);
+:root[data-theme="dark"] .item-card {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 
+:root[data-theme="dark"] .items-section {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="dark"] .stat-card {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="dark"] .stat-card .icon {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.05);
+}
+
 :root[data-theme="dark"] .item-header {
-    background: rgba(6, 182, 212, 0.12);
+    background: rgba(6, 182, 212, 0.08);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -258,11 +286,10 @@ select:-webkit-autofill {
 
 @media (hover: hover) and (pointer: fine) {
     :root[data-theme="dark"] .icon-btn {
-        background: transparent;
-        border: none;
-        width: auto;
-        height: auto;
-        padding: 0;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
     }
 
     .stat-card:hover {
